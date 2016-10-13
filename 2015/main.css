@@ -1,0 +1,181 @@
+html {
+  height: 100%;
+  padding: 0;
+  margin: 0;
+}
+header,footer {
+  display: block;
+}
+
+body {
+  min-height: 100%;
+  padding: 0;
+  margin: 0;
+  font-family:  'Proxima Nova', 'proxima-nova', 'helvetica neue', sans-serif;
+  background: #1b202a;
+  color: #fff;
+  -webkit-font-smoothing: antialiased;
+  text-align: center;
+  position: relative;
+}
+
+header {
+  padding: 0 10px 15px;
+  background: #101319;
+  border-bottom: 1px solid #050606;
+
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.wrapper {
+  border-top: 1px solid #2C323D;
+  padding: 50px 10px 120px;
+}
+
+.content {
+  max-width: 960px;
+  margin: auto;
+}
+
+h1 {
+  text-transform: uppercase;
+  text-shadow: 3px 3px 0 rgba(255,255,255,0.1);
+  letter-spacing: 2px;
+  margin-bottom: 0;
+  margin-top: 40px;
+  font-size: 2.5em;
+}
+
+.profile {
+  margin-top: 50px;
+  width: 200px;
+  border-radius: 50%;
+  border: 4px solid #fff;
+  box-shadow: 0px 6px 0 rgba(255,255,255,0.1);
+}
+
+.logo {
+  max-width: 150px;
+  max-height: 150px;
+}
+
+.ubc-logo {
+  height: 120px;
+  padding: 15px 0;
+}
+
+.uw-logo {
+  width: 300px;
+  max-width: none;
+  padding: 15px 0;
+}
+
+.buckets-logo {
+  margin-top: 80px;
+}
+
+
+.row:before, .row:after {
+  content: " ";
+  display: table;
+}
+.row:after {
+  clear: both;
+}
+
+.col {
+  width: 33.3332%;
+  float: left;
+}
+
+a {
+  color: #5080C5
+}
+
+.academic-page-row {
+  margin-top: 80px;
+  font-size: 0.9em;
+}
+
+footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding-bottom: 50px;
+}
+
+
+.social-logo {
+  width: 32px;
+  margin: 0 5px;
+  opacity: 1;
+  border: none;
+  border-radius: 50%;
+}
+
+.social-logo:hover {
+  box-shadow: 0 3px 0 rgba(255,255,255,0.1);
+}
+
+.em-container {
+  cursor: default;
+  display: inline-block;
+}
+
+.em-container:hover div {
+  color: #8B99AD;
+}
+
+.em-container div {
+  position: absolute;
+  text-align: center;
+  left: 0;
+  right: 0;
+  top: 44px;
+  font-size: 0.8em;
+  white-space: nowrap;
+  text-transform: uppercase;
+  color: #606E81;
+  transition: .5s color;
+
+}
+
+.m {
+  height: 9px;
+  opacity: 0.3;
+  transition: .5s opacity;
+}
+
+.em-container:hover .m {
+  opacity: 0.5;
+}
+
+.description {
+  padding-top: 10px;
+  display: block;
+  font-size: 0.75em;
+  color: #8B99AD;
+  max-width: 200px;
+  margin: auto;
+}
+
+@media screen and (max-width: 800px) {
+  .col {
+    width: 100%;
+    margin-bottom: 50px;
+  }
+
+  .uw-logo {
+    padding-bottom: 0;
+    margin-bottom: -10px;
+  }
+}
