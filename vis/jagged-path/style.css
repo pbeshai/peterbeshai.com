@@ -1,0 +1,23 @@
+body {
+  background: #fff;
+  color: #333;
+  font-family: 'helvetica neue', arial, sans-serif;
+  padding: 10px;
+}
+
+.bounding-rect {
+  stroke: #ccc;
+  stroke-width: 1px;
+  fill: none;
+}
+
+path {
+  fill: none;
+  stroke-width: 1.5px;
+}
+h1 {
+  margin-top: 0;
+}
+input {
+  font-size: 14px;
+}

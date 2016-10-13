@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>OVC Particles</title>
+    <style>
+      body {
+        background: #191919;
+        min-height: 1200px;
+      }
+
+      .main-header {
+        width: 500px;
+        height: 400px;
+        color: #fff;
+        font-size: 120px;
+        text-transform: uppercase;
+        font-weight: 700;
+        margin: 100px auto;
+        line-height: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="particle-container"></div>
+    <div class="main-header">
+      The Big
+      Word
+    </div>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="particles.js"></script>
+    <script>
+document.addEventListener('DOMContentLoaded', function () {
+  Particles.setup(document.getElementById('particle-container'),
+    {
+      density: 1, // particles per 10000 pixels (100x100)
+      connectParticleDistance: 100,
+      particleSpeed: 0.05,
+      particleSizeSpeed: 0.02,
+      line: {
+        stroke: '#d39e4c',
+        strokeDashArray: [2, 2],
+        strokeDashChance: 0.75, // chance that a given line is dashed
+        minOpacity: 0,
+        maxOpacity: 0.6,
+      },
+      circle: {
+        fill: '#d39e4c',
+        minRadius: 0,
+        maxRadius: 2.5,
+        minOpacity: 0,
+        maxOpacity: 0.4,
+        animateChance: 0.2, // chance that a circle is visible/animating in
+      },
+
+      // specify boundaries where particles will not enter
+      boundaries: [
+        '.main-header',
+      ],
+      debug: {
+        drawBoundaries: false,
+      },
+    });
+});
+    </script>
+  </body>
+</html>
