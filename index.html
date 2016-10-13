@@ -1,0 +1,70 @@
+---
+layout: default
+title: Home
+twitter: false
+twitter_type: summary_large_image
+description: Peter Beshai
+img: TODO
+projects:
+  - url: https://openvisconf.com/#videos
+    title: OpenVis Conf 2016 Videos
+  - url: http://peterbeshai.com/buckets
+    title: "Buckets: NBA Shot Visualization"
+open_source:
+  - url: http://peterbeshai.com/vis/d3-interpolate-path/
+    title: d3-interpolate-path
+  - url: http://peterbeshai.com/vis/d3-line-chunked/
+    title: d3-line-chunked
+  - url: http://peterbeshai.com/vis/d3-scale-interactive/
+    title: d3-scale-interactive
+  - url: http://pbeshai.github.io/react-auto-width/
+    title: react-auto-width
+  - url: http://pbeshai.github.io/react-taco-table/
+    title: react-taco-table
+  - url: http://pbeshai.github.io/react-url-query/
+    title: react-url-query
+blog:
+  - url: https://bocoup.com/weblog/showing-missing-data-in-line-charts
+    title:  Showing Missing Data in Line Charts
+  - url: https://bocoup.com/weblog/improving-d3-path-animation
+    title:  Improving D3 Path Animation
+  - url: https://medium.com/@pbesh/linked-highlighting-with-react-d3-js-and-reflux-16e9c0b2210b
+    title:  Linked Highlighting with React, D3.js and Reflux
+  - url: https://medium.com/@pbesh/react-and-vega-an-alternative-visualization-example-cd76e07dc1cd#.d3cx0asd0
+    title:  "React and Vega: An Alternative Visualization Example"
+---
+<section>
+  <h3>Projects</h3>
+  <ul class="posts">
+  {% for post in site.categories.projects %}
+  <li><a class="post_title" href="{{ post.url }}">{{ post.title }}</a></li>
+  {% endfor %}
+  {% for post in page.projects %}
+  <li><a class="post_title" href="{{ post.url }}">{{ post.title }}</a></li>
+  {% endfor %}
+  </ul>
+</section>
+
+<section>
+  <h3>Open Source</h3>
+  <ul class="posts">
+  {% for post in site.categories.open_source %}
+  <li><a class="post_title" href="{{ post.url }}">{{ post.title }}</a></li>
+  {% endfor %}
+  {% for post in page.open_source %}
+  <li><a class="post_title" href="{{ post.url }}">{{ post.title }}</a></li>
+  {% endfor %}
+  </ul>
+</section>
+
+<section>
+  <h3>Blog</h3>
+  <ul class="posts">
+  {% for post in site.categories.blog %}
+  <li><a class="post_title" href="{{ post.url }}">{{ post.title }}</a></li>
+  {% endfor %}
+  {% for post in page.blog %}
+  <li><a class="post_title" href="{{ post.url }}">{{ post.title }}</a></li>
+  {% endfor %}
+  </ul>
+</section>

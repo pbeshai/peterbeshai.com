@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <meta charset='UTF-8'>
+
+    {% if page.twitter %}
+    <meta name="twitter:card" content="{{ page.twitter_type }}">
+    <meta name="twitter:site" content="@pbesh">
+    <meta name="twitter:creator" content="@pbesh">
+    <meta name="twitter:title" content="{{ page.title }}">
+    <meta name="twitter:description" content="{{ page.description }}">
+    <meta name="twitter:image:src" content="{{ page.img }}">
+    {% else %}
+    <meta name="twitter:site" content="@pbesh">
+    <meta name="twitter:creator" content="@pbesh">
+    <meta name="twitter:title" content="{{ page.title }}">
+    {% endif %}
+
+    <link rel="stylesheet" href="/css/normalize.css" type="text/css">
+    <link rel='stylesheet' href='/css/main.css'/>
+    <!-- <link rel="stylesheet" href="/css/skeleton.css" type="text/css"> -->
+    <link rel="stylesheet" href="/css/github.css" type="text/css">
+    {% if page.css %}
+    <link rel="stylesheet" href="/css/pages/{{ page.css }}">
+    {% endif %}
+
+    <script src='//use.typekit.net/lek4aqi.js'></script>
+    <script>try{Typekit.load();}catch(e){}</script>
+    <title>{{ page.title }} - Peter Beshai</title>
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="theme-color" content="#ffffff">
+  </head>
+  <body>
+    <header class="main-header">
+      <div class="container">
+        <div class="main-header-inner">
+          <img src='/images/profile.jpg' class='profile'>
+          <h1>Peter Beshai</h1>
+          <h2>
+            <strong>Open Web Data Visualization Engineer</strong> at
+            <strong><a href="http://bocoup.com">Bocoup</a></strong> in
+            <strong>Boston, MA</strong>.
+          </h2>
+          <p class="short-desc">I like to do data visualization, write music, and watch basketball.
+        </div>
+      </div>
+    </header>
+    <div class="container">
+            {{ content }}
+    </div>
+    <footer>
+      <div class="container">
+        <div class="footer-main-inner">
+          <!-- icons from https://dribbble.com/shots/1427054-Flat-Minimalistic-Social-Icons -->
+          <a href='http://twitter.com/pbesh'><img src='/images/twitter.png' class='social-logo'></a>
+          <div class='em-container'><img src='/images/em.png' class='social-logo'><div>peter.beshai [at] g<img class='m' src='/images/gm.png'>ail</div></div>
+          <a href='https://www.linkedin.com/in/pbeshai'><img src='/images/linkedin.png' class='social-logo'></a>
+          <a href='https://github.com/pbeshai'><img src='/images/github.png' class='social-logo'></a>
+        </div>
+      </div>
+    </footer>
+    {% if page.js %}
+    <script src="/js/pages/{{ page.js }}" type="text/javascript" charset="utf-8"></script>
+    {% endif %}
+  </body>
+</html>
