@@ -47,8 +47,8 @@ function generateRandom(length) {
 
 function setupChart(data) {
   var margin = {top: 20, right: 30, bottom: 0, left: 20};
-  width = 600 - margin.left - margin.right;
-  height = 850 - margin.top - margin.bottom;
+  width = 800 - margin.left - margin.right;
+  height = 450 - margin.top - margin.bottom;
   var numGroups = 3;
   var groupHeight = height / numGroups;
 
@@ -80,8 +80,7 @@ function setupChart(data) {
       .defined(function (d) { return d.y != null; });
 
   svg.append('g')
-      .attr('class', 'ref-lines')
-      .style('display', 'none');
+      .attr('class', 'ref-lines');
 
   svg.append('g')
       .attr('class', 'basic-line')
@@ -102,7 +101,6 @@ function setupChart(data) {
     .append('text')
         .text('d3-line-chunked')
         .style('font-weight', 'bold')
-        .style('display', 'none')
         .attr('dy', -8);
 
   d3.select('.chart-container').append('button')
@@ -114,7 +112,6 @@ function setupChart(data) {
 
 
 function renderChunkedLine(lineData, root) {
-  console.log(lineData.map(d => d.y))
   var lineChunked = d3.lineChunked()
     .x(function (d) { return x(d.x); })
     .y(function (d) { return y(d.y); })
@@ -122,10 +119,6 @@ function renderChunkedLine(lineData, root) {
     .defined(function (d) { return d.y != null; })
     .lineStyles({
       stroke: '#0bb',
-    })
-    .chunk((d) => { return d.y > 50 ? 'red' : 'line'; })
-    .chunkDefinitions({
-      red: { styles: { stroke: 'tomato', 'stroke-dasharray': '4, 2' }}
     });
 
   root
