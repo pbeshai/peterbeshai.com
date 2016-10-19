@@ -85,6 +85,9 @@ function lineChunked () {
     // r: defaultLineAttrs['stroke-width'],
   };
 
+  var lineChunkName = 'line';
+  var gapChunkName = 'gap';
+
   /**
    * How to access the x attribute of `d`
    */
@@ -126,6 +129,51 @@ function lineChunked () {
   var isNext = function isNext() {
     return true;
   };
+
+  /**
+   * Function to determine which chunk this data is within.
+   *
+   * @param {Any} d data point
+   * @param {Any[]} data the full dataset
+   * @return {String} The id of the chunk. Defaults to "line"
+   */
+  var chunk = function chunk() {
+    return lineChunkName;
+  };
+
+  /**
+   * Decides what line the chunk should be in when given two defined points
+   * in different chunks. Uses the order provided by the keys of chunkDefinition
+   * if not specified, with `line` and `gap` prepended to the list if not
+   * in the chunkDefinition object.
+   *
+   * @param {String} chunkNameLeft The name of the chunk for the point on the left
+   * @param {String} chunkNameRight The name of the chunk for the point on the right
+   * @param {String[]} chunkNames the ordered list of chunk names from chunkDefinitions
+   * @return {String} The name of the chunk to assign the line segment between the two points to.
+   */
+  var chunkLineResolver = function defaultChunkLineResolver(chunkNameLeft, chunkNameRight, chunkNames) {
+    var leftIndex = chunkNames.indexOf(chunkNameLeft);
+    var rightIndex = chunkNames.indexOf(chunkNameRight);
+
+    return leftIndex > rightIndex ? chunkNameLeft : chunkNameRight;
+  };
+
+  /**
+   * Object specifying how to set style and attributes for each chunk.
+   * Format is an object:
+   *
+   * {
+   *   chunkName1: {
+   *     styles: {},
+   *     attrs: {},
+   *     pointStyles: {},
+   *     pointAttrs: {},
+   *   },
+   *   ...
+   * }
+   */
+  var chunkDefinitions = {};
 
   /**
    * Passed through to d3.line().curve. Default value: d3.curveLinear.
@@ -202,11 +250,157 @@ function lineChunked () {
   var debug = false;
 
   /**
+   * Logs warnings if the chunk definitions uses 'style' or 'attr' instead of
+   * 'styles' or 'attrs'
+   */
+  function validateChunkDefinitions() {
+    Object.keys(chunkDefinitions).forEach(function (key) {
+      var def = chunkDefinitions[key];
+      if (def.style != null) {
+        console.warn('Warning: chunkDefinitions expects "styles", but found "style" in ' + key, def);
+      }
+      if (def.attr != null) {
+        console.warn('Warning: chunkDefinitions expects "attrs", but found "attr" in ' + key, def);
+      }
+      if (def.pointStyle != null) {
+        console.warn('Warning: chunkDefinitions expects "pointStyles", but found "pointStyle" in ' + key, def);
+      }
+      if (def.pointAttr != null) {
+        console.warn('Warning: chunkDefinitions expects "pointAttrs", but found "pointAttr" in ' + key, def);
+      }
+    });
+  }
+
+  /**
+   * Helper to get the chunk names that are defined. Prepends
+   * line, gap to the start of the array unless useChunkDefOrder
+   * is specified. In this case, it only prepends if they are
+   * not specified in the chunk definitions.
+   */
+  function getChunkNames(useChunkDefOrder) {
+    var chunkDefNames = Object.keys(chunkDefinitions);
+    var prependLine = true;
+    var prependGap = true;
+
+    // if using chunk definition order, only prepend line/gap if they aren't in the
+    // chunk definition.
+    if (useChunkDefOrder) {
+      prependLine = !chunkDefNames.includes(lineChunkName);
+      prependGap = !chunkDefNames.includes(gapChunkName);
+    }
+
+    if (prependGap) {
+      chunkDefNames.unshift(gapChunkName);
+    }
+
+    if (prependLine) {
+      chunkDefNames.unshift(lineChunkName);
+    }
+
+    // remove duplicates and return
+    return chunkDefNames.filter(function (d, i, a) {
+      return a.indexOf(d) === i;
+    });
+  }
+
+  /**
+   * Helper function to compute the contiguous segments of the data
+   * @param {String} chunkName the chunk name to match. points not matching are removed.
+   *   if undefined, uses 'line'.
+   * @param {Array} definedSegments An array of segments (subarrays) of the defined line data (output from
+   *   computeDefinedSegments)
+   * @return {Array} An array of segments (subarrays) of the chunk line data
+   */
+  function computeChunkedSegments(chunkName, definedSegments) {
+    // helper to split a segment into sub-segments based on the chunk name
+    function splitSegment(segment, chunkNames) {
+      var startNewSegment = true;
+
+      // helper for adding to a segment / creating a new one
+      function addToSegment(segments, d) {
+        // if we are starting a new segment, start it with this point
+        if (startNewSegment) {
+          segments.push([d]);
+          startNewSegment = false;
+
+          // otherwise add to the last segment
+        } else {
+          var lastSegment = segments[segments.length - 1];
+          lastSegment.push(d);
+        }
+      }
+
+      var segments = segment.reduce(function (segments, d, i) {
+        var dChunkName = chunk(d);
+        var dPrev = segment[i - 1];
+        var dNext = segment[i + 1];
+
+        // if it matches name, add to the segment
+        if (dChunkName === chunkName) {
+          addToSegment(segments, d);
+        } else {
+          // check if this point belongs in the previous chunk:
+          var added = false;
+          // doesn't match chunk name, but does it go in the segment? as the end?
+          if (dPrev) {
+            var segmentChunkName = chunkLineResolver(chunk(dPrev), dChunkName, chunkNames);
+
+            // if it is supposed to be in this chunk, add it in
+            if (segmentChunkName === chunkName) {
+              addToSegment(segments, d);
+              added = true;
+              startNewSegment = false;
+            }
+          }
+
+          // doesn't belong in previous, so does it belong in next?
+          if (!added && dNext != null) {
+            // check if this point belongs in the next chunk
+            var nextSegmentChunkName = chunkLineResolver(dChunkName, chunk(dNext), chunkNames);
+
+            // if it's supposed to be in the next chunk, create it
+            if (nextSegmentChunkName === chunkName) {
+              segments.push([d]);
+              added = true;
+              startNewSegment = false;
+            } else {
+              startNewSegment = true;
+            }
+
+            // not previous or next
+          } else if (!added) {
+            startNewSegment = true;
+          }
+        }
+
+        return segments;
+      }, []);
+
+      return segments;
+    }
+
+    var chunkNames = getChunkNames(true);
+
+    var chunkSegments = definedSegments.reduce(function (carry, segment) {
+      var newSegments = splitSegment(segment, chunkNames);
+      if (newSegments && newSegments.length) {
+        return carry.concat(newSegments);
+      }
+
+      return carry;
+    }, []);
+
+    return chunkSegments;
+  }
+
+  /**
    * Helper function to compute the contiguous segments of the data
    * @param {Array} lineData the line data
+   * @param {String} chunkName the chunk name to match. points not matching are removed.
+   *   if undefined, uses 'line'.
    * @return {Array} An array of segments (subarrays) of the line data
    */
-  function computeSegments(lineData) {
+  function computeDefinedSegments(lineData) {
     var startNewSegment = true;
 
     // split into segments of continuous data
@@ -243,10 +437,110 @@ function lineChunked () {
   }
 
   /**
+   * Helper function that applies attrs and styles to the specified selection.
+   *
+   * @param {Object} selection The d3 selection
+   * @param {Object} evaluatedDefinition The evaluated styles and attrs obj (part of output from evaluateDefinitions())
+   * @param {Boolean} point if true, uses pointAttrs and pointStyles, otherwise attrs and styles (default: false).
+   * @return {void}
+   */
+  function applyAttrsAndStyles(selection, evaluatedDefinition) {
+    var point = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+
+    var attrsKey = point ? 'pointAttrs' : 'attrs';
+    var stylesKey = point ? 'pointStyles' : 'styles';
+
+    // apply user-provided attrs
+    Object.keys(evaluatedDefinition[attrsKey]).forEach(function (attr) {
+      selection.attr(attr, evaluatedDefinition[attrsKey][attr]);
+    });
+
+    // apply user-provided styles
+    Object.keys(evaluatedDefinition[stylesKey]).forEach(function (style) {
+      selection.style(style, evaluatedDefinition[stylesKey][style]);
+    });
+  }
+
+  /**
+   * For the selected line, evaluate the definitions objects. This is necessary since
+   * some of the style/attr values are functions that need to be evaluated per line.
+   *
+   * In general, the definitions are added in this order:
+   *
+   * 1. definition from lineStyle, lineAttrs, pointStyles, pointAttrs
+   * 2. if it is the gap line, add in gapStyles, gapAttrs
+   * 3. definition from chunkDefinitions
+   *
+   * Returns an object matching the form of chunkDefinitions:
+   * {
+   *   line: { styles, attrs, pointStyles, pointAttrs },
+   *   gap: { styles, attrs }
+   *   chunkName1: { styles, attrs, pointStyles, pointAttrs },
+   *   ...
+   * }
+   */
+  function evaluateDefinitions(d, i) {
+    // helper to evaluate an object of attr or style definitions
+    function evaluateAttrsOrStyles() {
+      var input = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+      return Object.keys(input).reduce(function (output, key) {
+        var val = input[key];
+
+        if (typeof val === 'function') {
+          val = val(d, i);
+        }
+
+        output[key] = val;
+        return output;
+      }, {});
+    }
+
+    var evaluated = {};
+
+    // get the list of chunks to create evaluated definitions for
+    var chunks = getChunkNames();
+
+    // for each chunk, evaluate the attrs and styles to use for lines and points
+    chunks.forEach(function (chunkName) {
+      var chunkDef = chunkDefinitions[chunkName] || {};
+      var evaluatedChunk = {
+        styles: Object.assign({}, evaluateAttrsOrStyles(lineStyles), evaluateAttrsOrStyles((chunkDefinitions[lineChunkName] || {}).styles), chunkName === gapChunkName ? evaluateAttrsOrStyles(gapStyles) : undefined, evaluateAttrsOrStyles(chunkDef.styles)),
+        attrs: Object.assign({}, evaluateAttrsOrStyles(lineAttrs), evaluateAttrsOrStyles((chunkDefinitions[lineChunkName] || {}).attrs), chunkName === gapChunkName ? evaluateAttrsOrStyles(gapAttrs) : undefined, evaluateAttrsOrStyles(chunkDef.attrs))
+      };
+
+      // set point attrs. defaults read from this chunk's line settings.
+      var basePointAttrs = {
+        fill: evaluatedChunk.attrs.stroke,
+        r: evaluatedChunk.attrs['stroke-width'] == null ? undefined : parseFloat(evaluatedChunk.attrs['stroke-width']) + 1
+      };
+
+      evaluatedChunk.pointAttrs = Object.assign(basePointAttrs, evaluateAttrsOrStyles(pointAttrs), evaluateAttrsOrStyles((chunkDefinitions[lineChunkName] || {}).pointAttrs), evaluateAttrsOrStyles(chunkDef.pointAttrs));
+
+      // ensure `r` is a number (helps to remove 'px' if provided)
+      if (evaluatedChunk.pointAttrs.r != null) {
+        evaluatedChunk.pointAttrs.r = parseFloat(evaluatedChunk.pointAttrs.r);
+      }
+
+      // set point styles. if no fill attr set, use the line style stroke. otherwise read from the attr.
+      var basePointStyles = chunkDef.pointAttrs && chunkDef.pointAttrs.fill != null ? {} : {
+        fill: evaluatedChunk.styles.stroke
+      };
+
+      evaluatedChunk.pointStyles = Object.assign(basePointStyles, evaluateAttrsOrStyles(pointStyles), evaluateAttrsOrStyles((chunkDefinitions[lineChunkName] || {}).pointStyles), evaluateAttrsOrStyles(chunkDef.pointStyles));
+
+      evaluated[chunkName] = evaluatedChunk;
+    });
+
+    return evaluated;
+  }
+
+  /**
    * Render the points for when segments have length 1.
    */
-  function renderCircles(initialRender, transition, context, root, points, evaluatedAttrs, evaluatedStyles) {
-    var circles = root.selectAll('circle').data(points, function (d) {
+  function renderCircles(initialRender, transition, context, root, points, evaluatedDefinition, className) {
+    var primaryClassName = className.split(' ')[0];
+    var circles = root.selectAll('.' + primaryClassName).data(points, function (d) {
       return d.id;
     });
 
@@ -265,23 +559,9 @@ function lineChunked () {
     var circlesEnter = circles.enter().append('circle');
 
     // apply user-provided attrs, using attributes from current line if not provided
-    var combinedAttrs = Object.assign({
-      fill: evaluatedAttrs.line.stroke,
-      r: evaluatedAttrs.line['stroke-width'] == null ? undefined : parseFloat(evaluatedAttrs.line['stroke-width']) + 1
-    }, evaluatedAttrs.point);
-    Object.keys(combinedAttrs).forEach(function (key) {
-      circlesEnter.attr(key, combinedAttrs[key]);
-    });
-    // ensure `r` is a number (helps to remove 'px' if provided)
-    combinedAttrs.r = parseFloat(combinedAttrs.r);
+    applyAttrsAndStyles(circlesEnter, evaluatedDefinition, true);
 
-    // apply user-provided styles, using attributes from current line if not provided
-    var combinedStyles = Object.assign(evaluatedAttrs.point.fill == null ? { fill: evaluatedStyles.line.stroke } : {}, evaluatedStyles.point);
-    Object.keys(combinedStyles).forEach(function (key) {
-      circlesEnter.style(key, combinedStyles[key]);
-    });
-
-    circlesEnter.classed('d3-line-chunked-defined-point', true).attr('r', 1e-6) // overrides provided `r value for now
+    circlesEnter.classed(className, true).attr('r', 1e-6) // overrides provided `r value for now
     .attr('cx', function (d) {
       return x(d.data);
     }).attr('cy', function (d) {
@@ -293,32 +573,23 @@ function lineChunked () {
       var enterDuration = transitionDuration * 0.15;
 
       // delay sizing up the radius until after the line transition
-      circlesEnter.transition(context).delay(transitionDelay + (transitionDuration - enterDuration)).duration(enterDuration).attr('r', combinedAttrs.r);
+      circlesEnter.transition(context).delay(transitionDelay + (transitionDuration - enterDuration)).duration(enterDuration).attr('r', evaluatedDefinition.pointAttrs.r);
     } else {
-      circlesEnter.attr('r', combinedAttrs.r);
+      circlesEnter.attr('r', evaluatedDefinition.pointAttrs.r);
     }
 
     // UPDATE
     if (transition) {
       circles = circles.transition(context);
     }
-    circles.attr('r', combinedAttrs.r).attr('cx', function (d) {
+    circles.attr('r', evaluatedDefinition.pointAttrs.r).attr('cx', function (d) {
       return x(d.data);
     }).attr('cy', function (d) {
       return y(d.data);
     });
   }
 
-  function getClipPathId(increment) {
-    var id = 'd3-line-chunked-clip-path-' + counter;
-    if (increment) {
-      counter += 1;
-    }
-
-    return id;
-  }
-
-  function renderClipRects(initialRender, transition, context, root, lineData, segments, _ref, _ref2, evaluatedAttrs, evaluatedStyles) {
+  function renderClipRects(initialRender, transition, context, root, segments, _ref, _ref2, evaluatedDefinition, path, clipPathId) {
     var _ref4 = slicedToArray(_ref, 2);
 
     var xMin = _ref4[0];
@@ -329,8 +600,9 @@ function lineChunked () {
     var yMin = _ref3[0];
     var yMax = _ref3[1];
 
-    var clipPathId = getClipPathId(true);
-    var clipPath = root.select('clipPath');
+    // TODO: issue with assigning IDs to clipPath elements. need to update how we select/create them
+    // need reference to path element to set stroke-width property
+    var clipPath = root.select('#' + clipPathId);
     var gDebug = root.select('.d3-line-chunked-debug');
 
     // set up debug group
@@ -338,13 +610,6 @@ function lineChunked () {
       gDebug = root.append('g').classed('d3-line-chunked-debug', true);
     } else if (!debug && !gDebug.empty()) {
       gDebug.remove();
-    }
-
-    // initial render
-    if (clipPath.empty()) {
-      clipPath = root.append('defs').append('clipPath').attr('id', clipPathId);
-    } else {
-      clipPath.attr('id', clipPathId);
     }
 
     var clipPathRects = clipPath.selectAll('rect').data(segments);
@@ -355,7 +620,8 @@ function lineChunked () {
 
     // get stroke width to avoid having the clip rects clip the stroke
     // See https://github.com/pbeshai/d3-line-chunked/issues/2
-    var strokeWidth = parseFloat(evaluatedStyles.line['stroke-width'] || root.select('.d3-line-chunked-defined').style('stroke-width') || evaluatedAttrs.line['stroke-width']);
+    var strokeWidth = parseFloat(evaluatedDefinition.styles['stroke-width'] || path.style('stroke-width') // reads from CSS too
+    || evaluatedDefinition.attrs['stroke-width']);
     var strokeWidthClipAdjustment = strokeWidth;
     var clipRectY = yMin - strokeWidthClipAdjustment;
     var clipRectHeight = yMax + strokeWidthClipAdjustment - (yMin - strokeWidthClipAdjustment);
@@ -505,32 +771,68 @@ function lineChunked () {
   }
 
   /**
-   * Render the paths for segments and gaps
+   * Helper function to draw the actual path
    */
-  function renderPaths(initialRender, transition, context, root, lineData, segments, _ref5, _ref6, evaluatedAttrs, evaluatedStyles) {
-    var _ref8 = slicedToArray(_ref5, 2);
-
-    var xMin = _ref8[0];
-    var xMax = _ref8[1];
-
-    var _ref7 = slicedToArray(_ref6, 2);
-
-    var yMin = _ref7[0];
-    var yMax = _ref7[1];
-    // eslint-disable-line
-    var definedPath = root.select('.d3-line-chunked-defined');
-    var undefinedPath = root.select('.d3-line-chunked-undefined');
-
-    // main line function
-    var line = d3Shape.line().x(x).y(y).curve(curve);
+  function renderPath(initialRender, transition, context, root, lineData, evaluatedDefinition, line, initialLine, className, clipPathId) {
+    var path = root.select('.' + className.split(' ')[0]);
 
     // initial render
-    if (definedPath.empty()) {
-      definedPath = root.append('path');
-      undefinedPath = root.append('path');
+    if (path.empty()) {
+      path = root.append('path');
+    }
+    var pathSelection = path;
+
+    if (clipPathId) {
+      path.attr('clip-path', 'url(#' + clipPathId + ')');
     }
 
-    definedPath.attr('clip-path', 'url(#' + getClipPathId(false) + ')');
+    // handle animations for initial render
+    if (initialRender) {
+      path.attr('d', initialLine(lineData));
+    }
+
+    // apply user defined styles and attributes
+    applyAttrsAndStyles(path, evaluatedDefinition);
+
+    path.classed(className, true);
+
+    // handle transition
+    if (transition) {
+      path = path.transition(context);
+    }
+
+    if (path.attrTween) {
+      // use attrTween is available (in transition)
+      path.attrTween('d', function dTween() {
+        var previous = d3Selection.select(this).attr('d');
+        var current = line(lineData);
+        return d3InterpolatePath.interpolatePath(previous, current);
+      });
+    } else {
+      path.attr('d', function () {
+        return line(lineData);
+      });
+    }
+
+    // can't return path since it might have the transition
+    return pathSelection;
+  }
+
+  /**
+   * Helper to get the line functions to use to draw the lines. Possibly
+   * updates the line data to be in [x, y] format if extendEnds is true.
+   *
+   * @return {Object} { line, initialLine, lineData }
+   */
+  function getLineFunctions(lineData, initialRender, _ref5) {
+    var _ref6 = slicedToArray(_ref5, 2);
+
+    var yMin = _ref6[0];
+    var yMax = _ref6[1];
+    // eslint-disable-line no-unused-vars
+    // main line function
+    var line = d3Shape.line().x(x).y(y).curve(curve);
+    var initialLine = void 0;
 
     // if the user specifies to extend ends for the undefined line, add points to the line for them.
     if (extendEnds && lineData.length) {
@@ -547,104 +849,128 @@ function lineChunked () {
 
     // handle animations for initial render
     if (initialRender) {
-      (function () {
-        // have the line load in with a flat y value
-        var initialLine = line;
-        if (transitionInitial) {
-          initialLine = d3Shape.line().x(x).y(yMax).curve(curve);
+      // have the line load in with a flat y value
+      initialLine = line;
+      if (transitionInitial) {
+        initialLine = d3Shape.line().x(x).y(yMax).curve(curve);
 
-          // if the user extends ends, we should use the line that works on that data
-          if (extendEnds) {
-            initialLine = d3Shape.line().y(yMax).curve(curve);
-          }
+        // if the user extends ends, we should use the line that works on that data
+        if (extendEnds) {
+          initialLine = d3Shape.line().y(yMax).curve(curve);
         }
-        definedPath.attr('d', function () {
-          return initialLine(lineData);
-        });
-        undefinedPath.attr('d', function () {
-          return initialLine(lineData);
-        });
-      })();
-    }
-
-    // apply user-provided attrs and styles
-    Object.keys(evaluatedAttrs.line).forEach(function (key) {
-      definedPath.attr(key, evaluatedAttrs.line[key]);
-      undefinedPath.attr(key, evaluatedAttrs.line[key]);
-    });
-    Object.keys(evaluatedStyles.line).forEach(function (key) {
-      definedPath.style(key, evaluatedStyles.line[key]);
-      undefinedPath.style(key, evaluatedStyles.line[key]);
-    });
-    definedPath.classed('d3-line-chunked-defined', true);
-
-    // overwrite with gap styles and attributes
-    Object.keys(evaluatedAttrs.gap).forEach(function (key) {
-      undefinedPath.attr(key, evaluatedAttrs.gap[key]);
-    });
-    Object.keys(evaluatedStyles.gap).forEach(function (key) {
-      undefinedPath.style(key, evaluatedStyles.gap[key]);
-    });
-    undefinedPath.classed('d3-line-chunked-undefined', true);
-
-    // handle transition
-    if (transition) {
-      definedPath = definedPath.transition(context);
-      undefinedPath = undefinedPath.transition(context);
-    }
-
-    if (definedPath.attrTween) {
-      // use attrTween is available (in transition)
-      definedPath.attrTween('d', function dTween() {
-        var previous = d3Selection.select(this).attr('d');
-        var current = line(lineData);
-        return d3InterpolatePath.interpolatePath(previous, current);
-      });
-      undefinedPath.attrTween('d', function dTween() {
-        var previous = d3Selection.select(this).attr('d');
-        var current = line(lineData);
-        return d3InterpolatePath.interpolatePath(previous, current);
-      });
-    } else {
-      definedPath.attr('d', function () {
-        return line(lineData);
-      });
-      undefinedPath.attr('d', function () {
-        return line(lineData);
-      });
-    }
-  }
-
-  /**
-   * Helper function to process any attrs or styles passed in as functions
-   * using the provided `d` and `i`
-   *
-   * @param {Object} lineInput lineAttrs or lineStyles
-   * @param {Object} gapInput gapAttrs or gapStyles
-   * @param {Object} pointInput pointAttrs or pointStyles
-   * @param {Object|Array} d the input data
-   * @param {Number} i the index for this dataset
-   * @return {Object} { line, gap, point }
-   */
-  function evaluate(lineInput, gapInput, pointInput, d, i) {
-    function evalInput(input) {
-      return Object.keys(input).reduce(function (output, key) {
-        var val = input[key];
-
-        if (typeof val === 'function') {
-          val = val(d, i);
-        }
-
-        output[key] = val;
-        return output;
-      }, {});
+      }
     }
 
     return {
-      line: evalInput(lineInput),
-      gap: evalInput(gapInput),
-      point: evalInput(pointInput)
+      line: line,
+      initialLine: initialLine || line,
+      lineData: lineData
     };
+  }
+
+  function initializeClipPath(chunkName, root) {
+    if (chunkName === gapChunkName) {
+      return undefined;
+    }
+
+    var defs = root.select('defs');
+    if (defs.empty()) {
+      defs = root.append('defs');
+    }
+
+    // className = d3-line-chunked-clip-chunkName
+    var className = 'd3-line-chunked-clip-' + chunkName;
+    var clipPath = defs.select('.' + className);
+
+    // initial render
+    if (clipPath.empty()) {
+      clipPath = defs.append('clipPath').attr('class', className).attr('id', 'd3-line-chunked-clip-' + chunkName + '-' + counter++);
+    }
+
+    return clipPath.attr('id');
+  }
+
+  /**
+   * Render the lines: circles, paths, clip rects for the given (data, lineIndex)
+   */
+  function renderLines(initialRender, transition, context, root, data, lineIndex) {
+    // use the accessor if provided (e.g. if the data is something like
+    // `{ results: [[x,y], [[x,y], ...]}`)
+    var lineData = accessData(data);
+
+    // filter to only defined data to plot the lines
+    var filteredLineData = lineData.filter(defined);
+
+    // determine the extent of the y values
+    var yExtent = d3Array.extent(filteredLineData.map(function (d) {
+      return y(d);
+    }));
+
+    // determine the extent of the x values to handle stroke-width adjustments on
+    // clipping rects. Do not use extendEnds here since it can clip the line ending
+    // in an unnatural way, it's better to just show the end.
+    var xExtent = d3Array.extent(filteredLineData.map(function (d) {
+      return x(d);
+    }));
+
+    // evaluate attrs and styles for the given dataset
+    // pass in the raw data and index for computing attrs and styles if they are functinos
+    var evaluatedDefinitions = evaluateDefinitions(data, lineIndex);
+
+    // update line functions and data depending on animation and render circumstances
+    var lineResults = getLineFunctions(filteredLineData, initialRender, yExtent);
+
+    // lineData possibly updated if extendEnds is true since we normalize to [x, y] format
+    var line = lineResults.line;
+    var initialLine = lineResults.initialLine;
+    var modifiedLineData = lineResults.lineData;
+
+    // for each chunk type, render a line
+
+    var chunkNames = getChunkNames();
+
+    var definedSegments = computeDefinedSegments(lineData);
+
+    // for each chunk, draw a line, circles and clip rect
+    chunkNames.forEach(function (chunkName) {
+      var clipPathId = initializeClipPath(chunkName, root);
+
+      var className = 'd3-line-chunked-chunk-' + chunkName;
+      if (chunkName === lineChunkName) {
+        className = 'd3-line-chunked-defined ' + className;
+      } else if (chunkName === gapChunkName) {
+        className = 'd3-line-chunked-undefined ' + className;
+      }
+
+      // get the eval defs for this chunk name
+      var evaluatedDefinition = evaluatedDefinitions[chunkName];
+
+      var path = renderPath(initialRender, transition, context, root, modifiedLineData, evaluatedDefinition, line, initialLine, className, clipPathId);
+
+      if (chunkName !== gapChunkName) {
+        // compute the segments and points for this chunk type
+        var segments = computeChunkedSegments(chunkName, definedSegments);
+        var points = segments.filter(function (segment) {
+          return segment.length === 1;
+        }).map(function (segment) {
+          return {
+            // use random ID so they are treated as entering/exiting each time
+            id: x(segment[0]),
+            data: segment[0]
+          };
+        });
+
+        var circlesClassName = className.split(' ').map(function (name) {
+          return name + '-point';
+        }).join(' ');
+        renderCircles(initialRender, transition, context, root, points, evaluatedDefinition, circlesClassName);
+
+        renderClipRects(initialRender, transition, context, root, segments, xExtent, yExtent, evaluatedDefinition, path, clipPathId);
+      }
+    });
+
+    // ensure all circles are at the top
+    root.selectAll('circle').raise();
   }
 
   // the main function that is returned
@@ -666,56 +992,22 @@ function lineChunked () {
     selection.each(function each(data, lineIndex) {
       var root = d3Selection.select(this);
 
-      // use the accessor if provided (e.g. if the data is something like
-      // `{ results: [[x,y], [[x,y], ...]}`)
-      var lineData = accessData(data);
-
-      var segments = computeSegments(lineData);
-      var points = segments.filter(function (segment) {
-        return segment.length === 1;
-      }).map(function (segment) {
-        return {
-          // use random ID so they are treated as entering/exiting each time
-          id: x(segment[0]),
-          data: segment[0]
-        };
-      });
-
-      // filter to only defined data to plot the lines
-      var filteredLineData = lineData.filter(defined);
-
-      // determine the extent of the y values
-      var yExtent = d3Array.extent(filteredLineData.map(function (d) {
-        return y(d);
-      }));
-
-      // determine the extent of the x values to handle stroke-width adjustments on
-      // clipping rects. Do not use extendEnds here since it can clip the line ending
-      // in an unnatural way, it's better to just show the end.
-      var xExtent = d3Array.extent(filteredLineData.map(function (d) {
-        return x(d);
-      }));
-
-      // evaluate attrs and styles for the given dataset
-      var evaluatedAttrs = evaluate(lineAttrs, gapAttrs, pointAttrs, data, lineIndex);
-      var evaluatedStyles = evaluate(lineStyles, gapStyles, pointStyles, data, lineIndex);
-
       var initialRender = root.select('.d3-line-chunked-defined').empty();
-      // pass in the raw data and index for computing attrs and styles if they are functinos
-      renderCircles(initialRender, transition, context, root, points, evaluatedAttrs, evaluatedStyles);
-      renderPaths(initialRender, transition, context, root, filteredLineData, segments, xExtent, yExtent, evaluatedAttrs, evaluatedStyles);
-      renderClipRects(initialRender, transition, context, root, filteredLineData, segments, xExtent, yExtent, evaluatedAttrs, evaluatedStyles);
+      renderLines(initialRender, transition, context, root, data, lineIndex);
     });
+
+    // provide warning about wrong attr/defs
+    validateChunkDefinitions();
   }
 
   // ------------------------------------------------
   // Define getters and setters
   // ------------------------------------------------
-  function getterSetter(_ref9) {
-    var get = _ref9.get;
-    var set = _ref9.set;
-    var setType = _ref9.setType;
-    var asConstant = _ref9.asConstant;
+  function getterSetter(_ref7) {
+    var get = _ref7.get;
+    var set = _ref7.set;
+    var setType = _ref7.setType;
+    var asConstant = _ref7.asConstant;
 
     return function getSet(newValue) {
       if (arguments.length) {
@@ -797,6 +1089,44 @@ function lineChunked () {
         return !!newValue;
       };
     }
+  });
+
+  // define `chunk([chunk])`
+  lineChunked.chunk = getterSetter({
+    get: function get() {
+      return chunk;
+    },
+    set: function set(newValue) {
+      chunk = newValue;
+    },
+    setType: 'function',
+    asConstant: function asConstant(newValue) {
+      return function () {
+        return newValue;
+      };
+    }
+  });
+
+  // define `chunkLineResolver([chunkLineResolver])`
+  lineChunked.chunkLineResolver = getterSetter({
+    get: function get() {
+      return chunkLineResolver;
+    },
+    set: function set(newValue) {
+      chunkLineResolver = newValue;
+    },
+    setType: 'function'
+  });
+
+  // define `chunkDefinitions([chunkDefinitions])`
+  lineChunked.chunkDefinitions = getterSetter({
+    get: function get() {
+      return chunkDefinitions;
+    },
+    set: function set(newValue) {
+      chunkDefinitions = newValue;
+    },
+    setType: 'object'
   });
 
   // define `curve([curve])`
