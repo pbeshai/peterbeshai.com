@@ -36,20 +36,20 @@ blog:
     title:  "React and Vega: An Alternative Visualization Example"
 ---
 <section>
-  <h3>Projects</h3>
-  <ul class="posts">
-  {% for post in site.categories.projects %}
+  <h4 class="list-header">Blog</h4>
+  <ul class="list-unstyled posts">
+  {% for post in site.categories.blog %}
   <li><a class="post_title" href="{{ post.url }}">{{ post.title }}</a></li>
   {% endfor %}
-  {% for post in page.projects %}
+  {% for post in page.blog %}
   <li><a class="post_title" href="{{ post.url }}">{{ post.title }}</a></li>
   {% endfor %}
   </ul>
 </section>
 
 <section>
-  <h3>Open Source</h3>
-  <ul class="posts">
+  <h4 class="list-header">Open Source</h4>
+  <ul class="list-unstyled posts">
   {% for post in site.categories.open_source %}
   <li><a class="post_title" href="{{ post.url }}">{{ post.title }}</a></li>
   {% endfor %}
@@ -60,12 +60,12 @@ blog:
 </section>
 
 <section>
-  <h3>Blog</h3>
-  <ul class="posts">
-  {% for post in site.categories.blog %}
+  <h4 class="list-header">Projects</h4>
+  <ul class="list-unstyled posts">
+  {% for post in site.categories.projects %}
   <li><a class="post_title" href="{{ post.url }}">{{ post.title }}</a></li>
   {% endfor %}
-  {% for post in page.blog %}
+  {% for post in page.projects %}
   <li><a class="post_title" href="{{ post.url }}">{{ post.title }}</a></li>
   {% endfor %}
   </ul>

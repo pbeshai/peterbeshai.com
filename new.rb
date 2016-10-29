@@ -6,7 +6,7 @@
 # $ ./new.rb "helper script to create new posts using jekyll"
 
 # Some constants
-TEMPLATE = "template.textile"
+TEMPLATE = "_templates/post_template.md"
 TARGET_DIR = "_posts"
 
 # Get the title which was passed as an argument

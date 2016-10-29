@@ -18,9 +18,9 @@
     {% endif %}
 
     <link rel="stylesheet" href="/css/normalize.css" type="text/css">
-    <link rel='stylesheet' href='/css/main.css'/>
-    <!-- <link rel="stylesheet" href="/css/skeleton.css" type="text/css"> -->
+    <link rel="stylesheet" href="/css/skeleton.css" type="text/css">
     <link rel="stylesheet" href="/css/github.css" type="text/css">
+    <link rel='stylesheet' href='/css/main.css'/>
     {% if page.css %}
     <link rel="stylesheet" href="/css/pages/{{ page.css }}">
     {% endif %}
@@ -40,7 +40,9 @@
     <header class="main-header">
       <div class="container">
         <div class="main-header-inner">
-          <img src='/images/profile.jpg' class='profile'>
+          <a href="/">
+            <img src='/images/profile.jpg' class='profile'>
+          </a>
           <h1>Peter Beshai</h1>
           <h2>
             <strong>Open Web Data Visualization Engineer</strong> at
