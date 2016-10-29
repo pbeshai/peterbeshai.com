@@ -121,6 +121,7 @@ are based on 10px sizing. So basically 1.5rem = 15px :) */
 html {
   font-size: 62.5%; }
 body {
+  font-family:  'Proxima Nova', 'proxima-nova', 'helvetica neue', sans-serif;
   font-size: 1.6em; /* currently ems cause chrome bug misinterpreting rems on body element */
   line-height: 1.6;
   font-weight: 400;
@@ -130,6 +131,7 @@ body {
 /* Typography
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 h1, h2, h3, h4, h5, h6 {
+  font-family:  'Proxima Nova', 'proxima-nova', 'helvetica neue', sans-serif;
   color: #444;
   margin-top: 0;
   margin-bottom: 2rem;
@@ -288,11 +290,12 @@ label > .label-body {
 /* Lists
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 ul {
-  list-style: circle inside; }
+  list-style: disc outside; }
 ol {
-  list-style: decimal inside; }
+  list-style: decimal outside; }
 ol, ul {
   padding-left: 0;
+  margin-left: 2rem;
   margin-top: 0; }
 ul ul,
 ul ol,

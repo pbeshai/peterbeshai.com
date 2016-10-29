@@ -131,6 +131,8 @@ a:hover {
 
 .list-unstyled {
   list-style-type: none;
+  margin-left: 0;
+  padding-left: 0;
 }
 
 .list-unstyled li {
@@ -147,4 +149,13 @@ section {
 
 .post-date {
   font-style: italic;
+}
+
+.post {
+  font-family: Georgia, serif;
+  font-size: 1.9rem;
+}
+
+pre, code, kbd, samp {
+  font-family: Menlo, Consolas, monospace;
 }

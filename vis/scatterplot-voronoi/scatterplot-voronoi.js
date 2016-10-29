@@ -1,9 +1,14 @@
+// generate random data
+const data = d3.range(50).map((d, i) => ({
+  x: Math.random(),
+  y: Math.random(),
+  id: i,
+  label: `Point ${i}`,
+}));
+
 // outer svg dimensions
 const width = 600;
 const height = 400;
-
-// radius of points in the scatterplot
-const pointRadius = 3;
 
 // padding around the chart where axes will go
 const padding = {
@@ -17,27 +22,13 @@ const padding = {
 const plotAreaWidth = width - padding.left - padding.right;
 const plotAreaHeight = height - padding.top - padding.bottom;
 
-// generate random data
-const data = d3.range(50).map((d, i) => ({
-  x: Math.random(),
-  y: Math.random(),
-  id: i,
-  label: `Point ${i}`,
-}));
+// radius of points in the scatterplot
+const pointRadius = 3;
 
 // initialize scales
 const xScale = d3.scaleLinear().domain([0, 1]).range([0, plotAreaWidth]);
 const yScale = d3.scaleLinear().domain([0, 1]).range([plotAreaHeight, 0]);
 const colorScale = d3.scaleLinear().domain([0, 1]).range(['#06a', '#0bb']);
-
-// create a voronoi diagram based on the data and the scales
-const voronoiDiagram = d3.voronoi()
-  .x(d => xScale(d.x))
-  .y(d => yScale(d.y))
-  .size([plotAreaWidth, plotAreaHeight])(data);
-
-// limit how far away the mouse can be from finding a voronoi site
-const voronoiRadius = plotAreaWidth / 10;
 
 const container = d3.select('#vis-container');
 
@@ -104,6 +95,17 @@ binding.enter().append('circle')
   .attr('cy', d => yScale(d.y))
   .attr('fill', d => colorScale(d.y));
 
+// add in interaction via voronoi
+// create a voronoi diagram based on the data and the scales
+const voronoiDiagram = d3.voronoi()
+  .x(d => xScale(d.x))
+  .y(d => yScale(d.y))
+  .size([plotAreaWidth, plotAreaHeight])(data);
+
+// limit how far away the mouse can be from finding a voronoi site
+const voronoiRadius = plotAreaWidth / 10;
+
+
 // add a circle for indicating the highlighted point
 g.append('circle')
   .attr('class', 'highlight-circle')
@@ -151,7 +153,10 @@ g.append('rect')
   });
 
 
-
+/**
+ * Add/remove a visible voronoi diagram and a circle indicating the radius used
+ * in the voronoi find function
+ */
 function toggleVoronoiDebug() {
   // remove if there
   if (!g.select('.voronoi-polygons').empty()) {
@@ -166,6 +171,7 @@ function toggleVoronoiDebug() {
       .attr('r', voronoiRadius)
       .style('fill', 'none')
       .style('stroke', 'tomato')
+      .style('stroke-dasharray', '3,2')
       .style('display', 'none');
 
 
