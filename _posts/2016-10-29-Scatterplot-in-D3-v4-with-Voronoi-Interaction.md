@@ -44,15 +44,14 @@ As shown in the diagram above, I use the following terms to describe the differe
 
 Before we even get started, let's generate some random data that we can use for testing out the scatterplot. We can do this easily with [d3.range](https://github.com/d3/d3-array/blob/master/README.md#range).
 
-{% highlight javascript %}
-// generate random data
+<pre><code class="language-js">// generate random data
 const data = d3.range(50).map((d, i) => ({
   x: Math.random(),
   y: Math.random(),
   id: i,
   label: `Point ${i}`,
 }));
-{% endhighlight %}
+</code></pre>
 
 
 ### Setting Up the Chart

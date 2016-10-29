@@ -159,3 +159,8 @@ section {
 pre, code, kbd, samp {
   font-family: Menlo, Consolas, monospace;
 }
+
+pre > code {
+  padding: 0;
+  border: 0;
+}
