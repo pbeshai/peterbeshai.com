@@ -196,8 +196,9 @@ And with that, we now have a scatterplot!
 With that out of the way, let's take a look at how we can use a voronoi diagram to add interactivity to the chart.
 
 
+<a name="voronoi"></a>
 
-## <a name="voronoi"></a>Adding Interactivity with a Voronoi Diagram
+## Adding Interactivity with a Voronoi Diagram
 
 The first thing we need to do is make use of [d3-voronoi](https://github.com/d3/d3-voronoi) to compute the voronoi diagram of the points.
 

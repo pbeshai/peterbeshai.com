@@ -157,6 +157,23 @@ section {
   max-width: 800px;
 }
 
+.heading-anchor {
+  color: #ccc;
+  font-weight: 300;
+  padding-right: 0;
+  margin-left: -30px;
+  display: inline-block;
+  width: 30px;
+  opacity: 0;
+  transition: .2s opacity;
+}
+
+.heading-anchor-container:hover .heading-anchor,
+.heading-anchor:hover {
+  text-decoration: none;
+  opacity: 1;
+}
+
 pre, code, kbd, samp,
 code[class*="language-"],
 pre[class*="language-"] {
