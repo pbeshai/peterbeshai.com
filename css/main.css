@@ -1,5 +1,5 @@
 body {
-  font-family:  'Proxima Nova', 'proxima-nova', 'helvetica neue', sans-serif;
+  font-family: 'Proxima Nova', 'proxima-nova', 'helvetica neue', sans-serif;
   background: #fff;
   color: #333;
   -webkit-font-smoothing: antialiased;
@@ -144,11 +144,22 @@ a:hover {
 }
 
 section {
-  margin-bottom: 3em;
+  margin-bottom: 3.5rem;
+}
+
+.post-header {
+  margin-bottom: 0;
 }
 
 .post-date {
-  font-style: italic;
+  font-family: 'Proxima Nova', 'proxima-nova', 'helvetica neue', sans-serif;
+  color: #888;
+}
+
+
+.main-body {
+  font-family: Georgia, serif;
+  font-size: 1.9rem;
 }
 
 .post {
