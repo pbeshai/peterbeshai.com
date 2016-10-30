@@ -210,3 +210,8 @@ pre > code {
 img {
   max-width: 100%; /* scale images down for mobile */
 }
+
+#vis-container {
+  font-family: 'Proxima Nova', 'proxima-nova', 'helvetica neue', sans-serif;
+  font-size: 1.5rem;
+}

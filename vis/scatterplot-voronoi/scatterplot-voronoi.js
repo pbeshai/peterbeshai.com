@@ -95,7 +95,8 @@ binding.enter().append('circle')
 // initialize text output for highlighted points
 const highlightOutput = container.append('div')
   .attr('class', 'highlight-output')
-  .style('padding-left', `${padding.left}px`);
+  .style('padding-left', `${padding.left}px`)
+  .style('min-height', '100px');
 
 // create a voronoi diagram based on the data and the scales
 const voronoiDiagram = d3.voronoi()
