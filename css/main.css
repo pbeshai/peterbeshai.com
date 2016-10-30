@@ -154,13 +154,31 @@ section {
 .post {
   font-family: Georgia, serif;
   font-size: 1.9rem;
+  max-width: 800px;
 }
 
-pre, code, kbd, samp {
-  font-family: Menlo, Consolas, monospace;
+pre, code, kbd, samp,
+code[class*="language-"],
+pre[class*="language-"] {
+  font-family: Menlo, Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+}
+pre[class*="language-"] {
+  margin: 0;
+  margin-bottom: 2.5rem;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+  background: #f6f6f6;
+  border: 0;
+  border-left: 6px solid #eee;
 }
 
 pre > code {
   padding: 0;
   border: 0;
+}
+
+img {
+  max-width: 100%; /* scale images down for mobile */
 }
