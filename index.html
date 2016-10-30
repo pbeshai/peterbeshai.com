@@ -39,9 +39,7 @@ blog:
   <h4 class="list-header">Blog</h4>
   <ul class="list-unstyled posts">
   {% for post in site.categories.blog %}
-    {% if post.published == true %}
-    <li><a class="post_title" href="{{ post.url }}">{{ post.title }}</a></li>
-    {% endif %}
+  <li><a class="post_title" href="{{ post.url }}">{{ post.title }}</a></li>
   {% endfor %}
   {% for post in page.blog %}
   <li><a class="post_title" href="{{ post.url }}">{{ post.title }}</a></li>

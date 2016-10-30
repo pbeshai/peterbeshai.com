@@ -3,17 +3,17 @@
 # Script to create a jekyll blog post using a template. It takes one input parameter
 # which is the title of the blog post
 # e.g. command:
-# $ ./new.rb "helper script to create new posts using jekyll"
+# $ ./draft.rb "helper script to create new posts using jekyll"
 
 # Some constants
 TEMPLATE = "_templates/post_template.md"
-TARGET_DIR = "_posts"
+TARGET_DIR = "_drafts"
 
 # Get the title which was passed as an argument
 title = ARGV[0]
 # Get the filename
 filename = title.gsub(' ','-')
-filename = "#{ Time.now.strftime('%Y-%m-%d') }-#{filename.downcase}.md"
+filename = "#{filename.downcase}.md"
 filepath = File.join(TARGET_DIR, filename)
 
 # Create a copy of the template with the title replaced
