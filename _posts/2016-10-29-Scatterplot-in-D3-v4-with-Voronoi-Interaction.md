@@ -12,11 +12,13 @@ categories:
 - scatterplot
 - d3
 ---
-With the [recent release of D3 v4.3.0](https://github.com/d3/d3/releases/v4.3.0), a notable new feature was added: [*diagram*.find](https://github.com/d3/d3-voronoi/blob/master/README.md#diagram_find) for **d3-voronoi**. With this great addition, we are now able to easily find which voronoi region is under the mouse without having to draw the voronoi diagram and rely on SVG mouse handlers to tell us. This means we can use voronoi interactive behavior even when other overlays in the vis are swallow mouse events, such as when using d3-brush. But I'm getting ahead of myself-- that's for another post.
+With the [recent release of D3 v4.3.0](https://github.com/d3/d3/releases/v4.3.0), a notable new feature was added: [*diagram*.find](https://github.com/d3/d3-voronoi/blob/master/README.md#diagram_find) for **d3-voronoi**. With this great addition, we are now able to easily find which voronoi region is under the mouse without having to render the voronoi diagram polygons and rely on SVG mouse handlers to tell us. This means we can easily use voronoi interactive behavior when other overlays in the vis consume mouse events, such as when using d3-brush, or when using canvas instead of SVG-- but those are topics for another post.
 
 ![Demo GIF](/vis/scatterplot-voronoi/scatterplot-voronoi.gif)
 
-In this post, I'd like to break down how we can make use of this great new function by using it to find nearest points in scatterplots. The main benefit of using a voronoi diagram for highlighting the points in a scatterplot is that the regions defined by the diagram are typically much larger than the points, making it easier for users to explore the data. It's also a more efficient method than computing the nearest point to the mouse position every time the mouse moves since we can precompute the voronoi diagram once and re-use it as we need it.
+In this post, I'd like to break down how we can make use of the new `find()` function by using it to find nearest points in scatterplots while the user mouses over the chart.
+
+The main benefit of using a voronoi diagram for highlighting the points in a scatterplot is that the regions defined by the diagram are typically much larger than the points, making it easier for users to explore the data. It's also a more efficient method than computing the nearest point to the mouse position every time the mouse moves since we can precompute the voronoi diagram once and re-use it as we need it.
 
 
 * [Live demo of the end result](/vis/scatterplot-voronoi/)
@@ -48,23 +50,23 @@ With that, we have an array of 50 random data points we can use with our chart.
 
 ### Terminology
 
-I use slightly different terminology for the parts of a chart than is commonly seen on D3 blocks. I prefer to have `width` and `height` correspond to the actual outer width and height of the SVG container. I find this makes it easier to reason about when trying to lay multiple charts out on a page, and is especially useful when they are packaged as reusable components. The standard seen in blocks is to have them describe the interior dimensions of the chart. My terms are defined as follows:
+I use slightly different terminology for the parts of a chart than is commonly seen on D3 blocks. The standard seen in blocks is to have `width` and `height` describe the interior dimensions of the chart. I prefer to have `width` and `height` correspond to the actual outer width and height of the SVG container. I find this makes it easier to reason about when trying to layout multiple charts on a page, and is especially useful when the charts are packaged as reusable components.
 
 
 ![Chart Parts Diagram](/images/posts/chart_parts_diagram.png)
 
 As shown in the diagram above, I use the following terms to describe the different parts of the chart:
 
-- `width` The outer width of the chart
-- `height` The outer height of the chart
-- `plotAreaWidth` The inner width of the chart, where the circles are plotted
-- `plotAreaHeight` The inner height of the chart, where the circles are plotted
-- `padding` The space between the outer border and the inner area (the plot area).
+| `width` | The outer width of the chart |
+| `height` | The outer height of the chart |
+| `plotAreaWidth` | The inner width of the chart, where the circles are plotted |
+| `plotAreaHeight` | The inner height of the chart, where the circles are plotted |
+| `padding` | The space between the outer border and the inner area (the plot  area). |
 
 
 ### Setting up the Chart
 
-We can now get started with the code for building the chart. We first define the dimensions and padding for our scatterplot.
+With that out of the way, let's get started with the code for building the chart. We first define the dimensions and padding for our scatterplot.
 
 ```js
 // outer svg dimensions
@@ -98,7 +100,7 @@ const colorScale = d3.scaleLinear().domain([0, 1]).range(['#06a', '#0bb']);
 ```
 {: .language-js}
 
-We now have all the constants and scales we need to begin generating the SVG for our chart. We do the standard method of creating an `<svg>` element with a `<g>` tag translated inside it to reflect our desired padding defined above.
+We now have all the constants and scales we need to begin generating the SVG for our chart. Next, we do the standard method of creating an `<svg>` element with a `<g>` tag translated inside it to reflect our desired padding, as defined above.
 
 ```js
 // select the root container where the chart will be added
@@ -165,10 +167,10 @@ xAxisG.call(xAxis);
 
 A couple things of note:
 
-- By default, d3-axis will square end at the end of the axes. This can overlap with the ticks of the chart and often the spacing looks a bit weird, so I always call `.tickSizeOuter(0)` on my axes to keep them as straight lines.
-- The number of ticks in the axes are based on the dimensions of the chart. By doing this instead of using a constant value, we ensure that our ticks do not get too compressed or too sparse as the dimensions of the chart change.
+- By default, d3-axis will add squared ends to the axes. Unless these ends happen to overlap one of the ticks, there will be strange spacing between them and the actual ticks of the axis, so I always call `.tickSizeOuter(0)` to remove them.
+- The number of ticks in the axes, `xTicks` and `yTicks`, are based on the dimensions of the chart. By doing this instead of using a constant value, we ensure that our ticks do not get too compressed or too sparse as the dimensions of the chart change.
 
-Next we draw the points as circles.
+Next, we draw the points as circles.
 
 ### Drawing the Points
 
@@ -189,12 +191,11 @@ binding.enter().append('circle')
 ```
 {: .language-js}
 
-And with that, we now have a scatterplot!
+We now have a scatterplot! 🎉
 
 ![Scatterplot](/vis/scatterplot-voronoi/scatterplot.png)
 
 With that out of the way, let's take a look at how we can use a voronoi diagram to add interactivity to the chart.
-
 
 <a name="voronoi"></a>
 
@@ -213,7 +214,7 @@ const voronoiDiagram = d3.voronoi()
 
 That's all it takes to compute the diagram! *And* the `size()` call is optional since we aren't going to use the `polygons` feature of the diagram. Note that we call the configured function with `(data)` at the end, which is what computes the diagram based on our generated data.
 
-Now that we have a computed voronoi diagram, let's add in some some mouse listeners to make use of it.
+Now that we have a computed voronoi diagram, let's add in some some mouse listeners to make use of it. We'll draw an invisible rectangular over the plot area of the chart that will listen for mouse events and use the voronoi diagram to highlight the nearest point to the mouse.
 
 ```js
 // limit how far away the mouse can be from finding a voronoi site
@@ -274,7 +275,9 @@ const site = voronoiDiagram.find(mx, my, voronoiRadius);
 ```
 {: .language-js}
 
-The `site` object returned from this function contains a key `data` that returns one of the data points from our original `data` array. We then use that data point to update the position of our highlight circle, indicating to the users which point is highlighted. Now that we have access to the point to highlight, we can do whatever we like with it! In the [demo](/vis/scatterplot-voronoi/), I show how we can display the contents of the highlighted point in a `<div>` beneath the chart.
+The `site` object returned from this function contains a key `data` that returns one of the data points from our original `data` array. We then use that data point to update the position of our highlight circle, indicating to the users which point is highlighted. And because we used a voronoi diagram, it will be the point nearest the mouse.
+
+Since we have access to the highlighted data point, we can do whatever we like with it! In the [demo](/vis/scatterplot-voronoi/), I show how we can display the contents of the highlighted point in a `<div>` beneath the chart.
 
 ![Demo GIF](/vis/scatterplot-voronoi/scatterplot-voronoi.gif)
 
