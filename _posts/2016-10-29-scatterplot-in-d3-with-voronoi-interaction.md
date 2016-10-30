@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Scatterplots in D3 v4 with Voronoi Interaction
+title: Scatterplots in D3 with Voronoi Interaction
 twitter: true
 twitter_type: summary_large_image
 img: http://peterbeshai.com/vis/scatterplot-voronoi/scatterplot-voronoi.gif

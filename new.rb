@@ -13,7 +13,7 @@ TARGET_DIR = "_posts"
 title = ARGV[0]
 # Get the filename
 filename = title.gsub(' ','-')
-filename = "#{ Time.now.strftime('%Y-%m-%d') }-#{filename}.md"
+filename = "#{ Time.now.strftime('%Y-%m-%d') }-#{filename.downcase}.md"
 filepath = File.join(TARGET_DIR, filename)
 
 # Create a copy of the template with the title replaced
