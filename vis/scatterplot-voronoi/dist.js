@@ -49,7 +49,7 @@ var xAxisG = g.append('g').classed('x-axis', true)
 // x-axis label
 g.append('text')
   .attr('transform', ("translate(" + (plotAreaWidth / 2) + " " + (plotAreaHeight + (padding.bottom)) + ")"))
-  .attr('dy', -4)
+  .attr('dy', -4) // adjust distance from the bottom edge
   .attr('class', 'axis-label')
   .attr('text-anchor', 'middle')
   .text('X Axis');
@@ -59,7 +59,8 @@ var yAxisG = g.append('g').classed('y-axis', true)
 
 // y-axis label
 g.append('text')
-  .attr('transform', ("rotate(270) translate(" + (-plotAreaHeight / 2) + " " + (-padding.left + 12) + ")"))
+  .attr('transform', ("rotate(270) translate(" + (-plotAreaHeight / 2) + " " + (-padding.left) + ")"))
+  .attr('dy', 12) // adjust distance from the left edge
   .attr('class', 'axis-label')
   .attr('text-anchor', 'middle')
   .text('Y Axis');
@@ -111,7 +112,7 @@ var voronoiRadius = plotAreaWidth / 10;
 // add a circle for indicating the highlighted point
 g.append('circle')
   .attr('class', 'highlight-circle')
-  .attr('r', pointRadius + 2)
+  .attr('r', pointRadius + 2) // slightly larger than our points
   .style('fill', 'none')
   .style('display', 'none');
 
@@ -122,7 +123,7 @@ function highlight(d) {
     d3.select('.highlight-circle').style('display', 'none');
     highlightOutput.text('');
 
-  // otherwise, show the circles at the right position
+  // otherwise, show the highlight circle at the correct position
   } else {
     d3.select('.highlight-circle')
       .style('display', '')

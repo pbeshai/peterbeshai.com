@@ -4,30 +4,33 @@ title: Scatterplots in D3 with Voronoi Interaction
 twitter: true
 twitter_type: summary_large_image
 img: http://peterbeshai.com/vis/scatterplot-voronoi/preview.png
-description: In this post, I explain how to add hover behavior to a scatterplot using D3's voronoi diagram capabilities without actually drawing the voronoi polygons.
+description: In this post, I explain how to add hover behavior to a scatterplot using D3's Voronoi diagram capabilities without actually drawing the Voronoi polygons.
 categories:
 - blog
 - vis
 - scatterplot
 - d3
 ---
-With the [recent release of D3 v4.3.0](https://github.com/d3/d3/releases/v4.3.0), a notable new feature was added: [*diagram*.find](https://github.com/d3/d3-voronoi/blob/master/README.md#diagram_find) for **d3-voronoi**. With this great addition, we are now able to easily find which voronoi region is under the mouse without having to render the voronoi diagram polygons and rely on SVG mouse handlers to tell us. This means we can easily use voronoi interactive behavior when other overlays in the vis consume mouse events, such as when using d3-brush, or when using canvas instead of SVG-- but those are topics for another post.
+D3 v4.3.0 was [just released](https://github.com/d3/d3/releases/v4.3.0), and it came with a notable new feature: [*diagram*.find](https://github.com/d3/d3-voronoi/blob/master/README.md#diagram_find) for **d3-voronoi**. With this great addition, we are now able to easily find which Voronoi region is under the mouse without rendering the Voronoi diagram polygons and relying on SVG mouse handlers. This means we can use Voronoi interactive behavior when other overlays in the vis consume mouse events, such as when using [d3-brush](https://github.com/d3/d3-brush), or even when using canvas instead of SVG-- but those are topics for another post.
+
+In this post, I break down how we can make use of the new `find()` function by using it to access the nearest point to the mouse in a scatterplot.
 
 ![Demo GIF](/vis/scatterplot-voronoi/scatterplot-voronoi.gif)
-
-In this post, I'd like to break down how we can make use of the new `find()` function by using it to find nearest points in scatterplots while the user mouses over the chart.
-
-The main benefit of using a voronoi diagram for highlighting the points in a scatterplot is that the regions defined by the diagram are typically much larger than the points, making it easier for users to explore the data. It's also a more efficient method than computing the nearest point to the mouse position every time the mouse moves since we can precompute the voronoi diagram once and re-use it as we need it.
 
 
 * [Live demo of the end result](/vis/scatterplot-voronoi/)
 * [GitHub Code](https://github.com/pbeshai/pbeshai.github.io/tree/master/vis/scatterplot-voronoi)
 
-So without further adieu, let's get to making a simple scatterplot with interactivity powered by voronoi diagrams!
+### Why Voronoi?
+We can think of a [Voronoi diagram](https://en.wikipedia.org/wiki/Voronoi_diagram) as a method for expanding the hit area around points in a chart. Each point becomes a non-overlapping region such that if the mouse is inside that region, that point is the closest point to the mouse.
+
+The main benefit of using a Voronoi diagram for highlighting the points in a scatterplot is that the regions defined by the diagram are typically much larger than the points, making it easier for users to explore the data. It's also a more efficient method than computing the nearest point to the mouse position every time the mouse moves since we can precompute the Voronoi diagram once and re-use it as we need it.
+
+Without further adieu, let's get to making a simple scatterplot with interactivity powered by Voronoi diagrams!
 
 ## Building a Basic Scatterplot
 
-Let's start with describing how to build a simple scatterplot in D3. If you already know this, feel free to [skip to the next section](#voronoi) on adding the voronoi-powered interaction.
+Let's start with describing how to build a simple scatterplot in D3. If you already know this, feel free to [skip to the next section](#voronoi) on adding the Voronoi-powered interaction.
 
 ### Generating Random Data
 
@@ -49,7 +52,7 @@ With that, we have an array of 50 random data points we can use with our chart.
 
 ### Terminology
 
-I use slightly different terminology for the parts of a chart than is commonly seen on D3 blocks. The standard seen in blocks is to have `width` and `height` describe the interior dimensions of the chart. I prefer to have `width` and `height` correspond to the actual outer width and height of the SVG container. I find this makes it easier to reason about when trying to layout multiple charts on a page, and is especially useful when the charts are packaged as reusable components.
+I use slightly different terminology for the parts of a chart than is commonly seen on [D3 blocks](http://bl.ocks.org/). The standard seen in blocks is to have `width` and `height` describe the interior dimensions of the chart. I prefer to have `width` and `height` correspond to the actual outer width and height of the SVG container. I find this makes it easier to reason about when trying to layout multiple charts on a page, and is especially useful when the charts are packaged as reusable components.
 
 
 ![Chart Parts Diagram](/images/posts/chart_parts_diagram.png)
@@ -99,7 +102,7 @@ const colorScale = d3.scaleLinear().domain([0, 1]).range(['#06a', '#0bb']);
 ```
 {: .language-js}
 
-We now have all the constants and scales we need to begin generating the SVG for our chart. Next, we do the standard method of creating an `<svg>` element with a `<g>` tag translated inside it to reflect our desired padding, as defined above.
+We now have all the constants and scales we need to begin generating the SVG for our chart. We do the standard procedure of creating an `<svg>` element with a `<g>` tag translated inside it to reflect our desired padding.
 
 ```js
 // select the root container where the chart will be added
@@ -130,7 +133,7 @@ const xAxisG = g.append('g').classed('x-axis', true)
 // x-axis label
 g.append('text')
   .attr('transform', `translate(${plotAreaWidth / 2} ${plotAreaHeight + (padding.bottom)})`)
-  .attr('dy', -4)
+  .attr('dy', -4) // adjust distance from the bottom edge
   .attr('class', 'axis-label')
   .attr('text-anchor', 'middle')
   .text('X Axis');
@@ -140,7 +143,8 @@ const yAxisG = g.append('g').classed('y-axis', true)
 
 // y-axis label
 g.append('text')
-  .attr('transform', `rotate(270) translate(${-plotAreaHeight / 2} ${-padding.left + 12})`)
+  .attr('transform', `rotate(270) translate(${-plotAreaHeight / 2} ${-padding.left})`)
+  .attr('dy', 12) // adjust distance from the left edge
   .attr('class', 'axis-label')
   .attr('text-anchor', 'middle')
   .text('Y Axis');
@@ -194,16 +198,16 @@ We now have a scatterplot! 🎉
 
 ![Scatterplot](/vis/scatterplot-voronoi/scatterplot.png)
 
-With that out of the way, let's take a look at how we can use a voronoi diagram to add interactivity to the chart.
+With that out of the way, let's take a look at how we can use a Voronoi diagram to add interactivity to the chart.
 
 <a name="voronoi"></a>
 
 ## Adding Interactivity with a Voronoi Diagram
 
-The first thing we need to do is make use of [d3-voronoi](https://github.com/d3/d3-voronoi) to compute the voronoi diagram of the points.
+The first thing we need to do is make use of [d3-voronoi](https://github.com/d3/d3-voronoi) to compute the Voronoi diagram of the points.
 
 ```js
-// create a voronoi diagram based on the data and the scales
+// create a Voronoi diagram based on the data and the scales
 const voronoiDiagram = d3.voronoi()
   .x(d => xScale(d.x))
   .y(d => yScale(d.y))
@@ -213,16 +217,16 @@ const voronoiDiagram = d3.voronoi()
 
 That's all it takes to compute the diagram! *And* the `size()` call is optional since we aren't going to use the `polygons` feature of the diagram. Note that we call the configured function with `(data)` at the end, which is what computes the diagram based on our generated data.
 
-Now that we have a computed voronoi diagram, let's add in some some mouse listeners to make use of it. We'll draw an invisible rectangular over the plot area of the chart that will listen for mouse events and use the voronoi diagram to highlight the nearest point to the mouse.
+Now that we have a computed Voronoi diagram, let's add in some some mouse listeners to make use of it. We'll draw an invisible rectangle over the plot area of the chart that will listen for mouse events and use the Voronoi diagram to highlight the nearest point to the mouse.
 
 ```js
-// limit how far away the mouse can be from finding a voronoi site
+// limit how far away the mouse can be from finding a Voronoi site
 const voronoiRadius = plotAreaWidth / 10;
 
 // add a circle for indicating the highlighted point
 g.append('circle')
   .attr('class', 'highlight-circle')
-  .attr('r', pointRadius + 2)
+  .attr('r', pointRadius + 2) // slightly larger than our points
   .style('fill', 'none')
   .style('display', 'none');
 
@@ -232,7 +236,7 @@ function highlight(d) {
   if (!d) {
     d3.select('.highlight-circle').style('display', 'none');
 
-  // otherwise, show the circles at the right position
+  // otherwise, show the highlight circle at the correct position
   } else {
     d3.select('.highlight-circle')
       .style('display', '')
@@ -253,7 +257,7 @@ g.append('rect')
     // get the current mouse position
     const [mx, my] = d3.mouse(this);
 
-    // use the new diagram.find() function to find the voronoi site
+    // use the new diagram.find() function to find the Voronoi site
     // closest to the mouse, limited by max distance voronoiRadius
     const site = voronoiDiagram.find(mx, my, voronoiRadius);
 
@@ -267,23 +271,23 @@ g.append('rect')
 ```
 {: .language-js}
 
-The important part is how we used `voronoiDiagram.find()` to find the nearest voronoi site to the mouse:
+The important part is how we used `voronoiDiagram.find()` to find the nearest Voronoi site to the mouse:
 
 ```js
 const site = voronoiDiagram.find(mx, my, voronoiRadius);
 ```
 {: .language-js}
 
-The `site` object returned from this function contains a key `data` that returns one of the data points from our original `data` array. We then use that data point to update the position of our highlight circle, indicating to the users which point is highlighted. And because we used a voronoi diagram, it will be the point nearest the mouse.
+The `site` object returned from this function contains a key `data` that returns one of the data points from our original `data` array. We then use that data point to update the position of our highlight circle, indicating to the users which point is highlighted. Since we used a Voronoi diagram, it will be the point nearest the mouse.
 
-Since we have access to the highlighted data point, we can do whatever we like with it! In the [demo](/vis/scatterplot-voronoi/), I show how we can display the contents of the highlighted point in a `<div>` beneath the chart.
+This method gives us access to the highlighted data point-- we can do whatever we like with it! In the [demo](/vis/scatterplot-voronoi/), I show how we can display the contents of the highlighted point in a `<div>` beneath the chart.
 
 ![Demo GIF](/vis/scatterplot-voronoi/scatterplot-voronoi.gif)
 
 
 ## Conclusion
 
-That's it! We've got a basic scatterplot with hover behavior driven by a voronoi diagram. D3 really makes it that easy. My next post will show how we can add a brush to our scatterplot to select points efficiently with a quadtree, all while retaining the hover behavior shown in this post.
+That's it! We've got a basic scatterplot with hover behavior driven by a Voronoi diagram. My next post will show how we can add a brush to our scatterplot to select points efficiently with a quadtree, all while retaining the hover behavior shown in this post.
 
 If you have any questions or comments, please leave a comment below or send me a tweet [@pbesh](https://twitter.com/pbesh). In case you missed it, there's a [live demo](/vis/scatterplot-voronoi/) of this code on my site and the full source code is available on [GitHub](https://github.com/pbeshai/pbeshai.github.io/tree/master/vis/scatterplot-voronoi).
 
