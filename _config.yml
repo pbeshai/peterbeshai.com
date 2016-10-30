@@ -8,3 +8,18 @@ description: ""
 
 rdiscount:
   extensions: []
+
+defaults:
+  -
+    scope:
+      path: ""
+    values:
+      ogtype: "website"
+  -
+    scope:
+      path: ""
+      type: "posts"
+    values:
+      ogtype: "article"
+
+root_url: http://peterbeshai.com

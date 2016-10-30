@@ -4,17 +4,23 @@
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <meta charset='UTF-8'>
 
-    {% if page.twitter %}
+    {% if page.twitter_type %}
     <meta name="twitter:card" content="{{ page.twitter_type }}">
+    {% endif %}
+
     <meta name="twitter:site" content="@pbesh">
     <meta name="twitter:creator" content="@pbesh">
     <meta name="twitter:title" content="{{ page.title }}">
+    <meta property="og:url" content="{{ site.root_url }}{{ page.url }}" />
+    <meta property="og:type" content="{{ page.ogtype }}" />
+    <meta property="og:title" content="{{ page.title }}" />
+    {% if page.description %}
     <meta name="twitter:description" content="{{ page.description }}">
+    <meta property="og:description" content="{{ page.description }}" />
+    {% endif %}
+    {% if page.img %}
+    <meta property="og:image" content="{{ page.img }}" />
     <meta name="twitter:image:src" content="{{ page.img }}">
-    {% else %}
-    <meta name="twitter:site" content="@pbesh">
-    <meta name="twitter:creator" content="@pbesh">
-    <meta name="twitter:title" content="{{ page.title }}">
     {% endif %}
 
     <link rel="stylesheet" href="/css/normalize.css" type="text/css">
@@ -27,6 +33,7 @@
 
     <script src='//use.typekit.net/lek4aqi.js'></script>
     <script>try{Typekit.load();}catch(e){}</script>
+    <script src="//d3js.org/d3.v4.min.js"></script>
     <title>{{ page.title }} - Peter Beshai</title>
 
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -71,7 +78,6 @@
     <script src="/js/pages/{{ page.js }}" type="text/javascript" charset="utf-8"></script>
     {% endif %}
     <script src="/js/prism.js"></script>
-    <script src="//d3js.org/d3.v4.min.js"></script>
     <script src="/js/main.js"></script>
 
     <script>
