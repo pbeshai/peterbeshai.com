@@ -184,15 +184,16 @@ function extend(commandsToExtend, referenceCommands, numPointsToExtend) {
  * @param {String} b The `d` attribute for a path
  */
 function interpolatePath(a, b) {
-  var aNormalized = a == null ? null : a.replace(/[Z]/gi, '');
-  var bNormalized = b == null ? null : b.replace(/[Z]/gi, '');
-  var aPoints = aNormalized == null ? [] : aNormalized.split(/(?=[MLCSTQAHV])/gi);
-  var bPoints = bNormalized == null ? [] : bNormalized.split(/(?=[MLCSTQAHV])/gi);
+  // remove Z, remove spaces after letters as seen in IE
+  var aNormalized = a == null ? '' : a.replace(/[Z]/gi, '').replace(/([MLCSTQAHV])\W*/gi, '$1');
+  var bNormalized = b == null ? '' : b.replace(/[Z]/gi, '').replace(/([MLCSTQAHV])\W*/gi, '$1');
+  var aPoints = aNormalized === '' ? [] : aNormalized.split(/(?=[MLCSTQAHV])/gi);
+  var bPoints = bNormalized === '' ? [] : bNormalized.split(/(?=[MLCSTQAHV])/gi);
 
-  // if both are empty, interpolation is always null.
+  // if both are empty, interpolation is always the empty string.
   if (!aPoints.length && !bPoints.length) {
     return function nullInterpolator() {
-      return null;
+      return '';
     };
   }
 
@@ -245,7 +246,7 @@ function interpolatePath(a, b) {
   return function pathInterpolator(t) {
     // at 1 return the final value without the extensions used during interpolation
     if (t === 1) {
-      return b;
+      return b == null ? '' : b;
     }
 
     return stringInterpolator(t);
