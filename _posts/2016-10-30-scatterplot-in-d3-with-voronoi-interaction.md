@@ -247,6 +247,19 @@ function highlight(d) {
   }
 }
 
+// callback for when the mouse moves across the overlay
+function mouseMoveHandler() {
+  // get the current mouse position
+  const [mx, my] = d3.mouse(this);
+
+  // use the new diagram.find() function to find the Voronoi site
+  // closest to the mouse, limited by max distance voronoiRadius
+  const site = voronoiDiagram.find(mx, my, voronoiRadius);
+
+  // highlight the point if we found one
+  highlight(site && site.data);
+}
+
 // add the overlay on top of everything to take the mouse events
 g.append('rect')
   .attr('class', 'overlay')
@@ -254,17 +267,7 @@ g.append('rect')
   .attr('height', plotAreaHeight)
   .style('fill', '#f00')
   .style('opacity', 0)
-  .on('mousemove', function mouseMoveHandler() {
-    // get the current mouse position
-    const [mx, my] = d3.mouse(this);
-
-    // use the new diagram.find() function to find the Voronoi site
-    // closest to the mouse, limited by max distance voronoiRadius
-    const site = voronoiDiagram.find(mx, my, voronoiRadius);
-
-    // highlight the point if we found one
-    highlight(site && site.data);
-  })
+  .on('mousemove', mouseMoveHandler)
   .on('mouseleave', () => {
     // hide the highlight circle when the mouse leaves the chart
     highlight(null);
@@ -285,6 +288,14 @@ This method gives us access to the highlighted data point-- we can do whatever w
 
 ![Demo GIF](/vis/scatterplot-voronoi/scatterplot-voronoi.gif)
 
+Note that I arbitrarily set the `voronoiRadius` to 1/10th the width of the plot area:
+
+```js
+const voronoiRadius = plotAreaWidth / 10;
+```
+{: .language-js}
+
+This makes it so the point is only highlighted if you're relatively close to it, even if you are in the corresponding voronoi cell. Feel free to play with this value to get something that works for you!
 
 ## Conclusion
 
