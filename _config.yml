@@ -22,4 +22,4 @@ defaults:
     values:
       ogtype: "article"
 
-root_url: http://peterbeshai.com
+github_code_root: https://github.com/pbeshai/pbeshai.github.io/tree/master
