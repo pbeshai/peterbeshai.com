@@ -21,5 +21,3 @@ defaults:
       type: "posts"
     values:
       ogtype: "article"
-
-github_code_root: https://github.com/pbeshai/pbeshai.github.io/tree/master

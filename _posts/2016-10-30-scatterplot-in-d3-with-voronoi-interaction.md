@@ -5,7 +5,7 @@ twitter_type: summary_large_image
 description: In this post, I explain how to add hover behavior to a scatterplot using D3's Voronoi diagram capabilities without actually drawing the Voronoi polygons.
 img: /vis/scatterplot-voronoi/preview.png
 demo: /vis/scatterplot-voronoi/
-github: /vis/scatterplot-voronoi
+github: https://github.com/pbeshai/pbeshai.github.io/tree/master/vis/scatterplot-voronoi
 categories:
 - blog
 - vis
@@ -19,8 +19,8 @@ In this post, I break down how we can make use of the new `find()` function by u
 ![Demo GIF](/vis/scatterplot-voronoi/scatterplot-voronoi.gif)
 
 
-* [Live demo of the end result](/vis/scatterplot-voronoi/)
-* [GitHub Code](https://github.com/pbeshai/pbeshai.github.io/tree/master/vis/scatterplot-voronoi)
+* [Live demo of the end result]({{ page.demo }})
+* [GitHub Code]({{ page.github }})
 
 ### Why Voronoi?
 We can think of a [Voronoi diagram](https://en.wikipedia.org/wiki/Voronoi_diagram) as a method for expanding the hit area around points in a chart. Each point becomes a non-overlapping region such that if the mouse is inside that region, that point is the closest point to the mouse.
@@ -281,7 +281,7 @@ const site = voronoiDiagram.find(mx, my, voronoiRadius);
 
 The `site` object returned from this function contains a key `data` that returns one of the data points from our original `data` array. We then use that data point to update the position of our highlight circle, indicating to the users which point is highlighted. Since we used a Voronoi diagram, it will be the point nearest the mouse.
 
-This method gives us access to the highlighted data point-- we can do whatever we like with it! In the [demo](/vis/scatterplot-voronoi/), I show how we can display the contents of the highlighted point in a `<div>` beneath the chart.
+This method gives us access to the highlighted data point-- we can do whatever we like with it! In the [demo]({{ page.demo }}), I show how we can display the contents of the highlighted point in a `<div>` beneath the chart.
 
 ![Demo GIF](/vis/scatterplot-voronoi/scatterplot-voronoi.gif)
 
@@ -290,5 +290,5 @@ This method gives us access to the highlighted data point-- we can do whatever w
 
 That's it! We've got a basic scatterplot with hover behavior driven by a Voronoi diagram. My next post will show how we can add a brush to our scatterplot to select points efficiently with a quadtree, all while retaining the hover behavior shown in this post.
 
-If you have any questions or comments, please leave a comment below or send me a tweet [@pbesh](https://twitter.com/pbesh). In case you missed it, there's a [live demo](/vis/scatterplot-voronoi/) of this code on my site and the full source code is available on [GitHub](https://github.com/pbeshai/pbeshai.github.io/tree/master/vis/scatterplot-voronoi).
+If you have any questions or comments, please leave a comment below or send me a tweet [@pbesh](https://twitter.com/pbesh). In case you missed it, there's a [live demo]({{ page.demo }}) of this code on my site and the full source code is available on [GitHub]({{ page.github }}).
 
