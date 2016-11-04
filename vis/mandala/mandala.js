@@ -1,7 +1,6 @@
 // mark types
 // const markTypes = ['diagonalUp', 'diagonalDown', 'x', 'arc', 'point']; // 'square'];
 const markTypes = ['x', 'arrow', 'arc', 'point']; // 'square'];
-const numInnerTypes = 2;
 const animate = true;
 const numMarks = 30;
 
@@ -13,18 +12,13 @@ const data = d3.range(numMarks).map((d, i) => {
   let validType;
   do {
     validType = true;
-    // more likely to use lines in first few
-    if (i < 3 && Math.random() < 0.5) {
-      type = markTypes[Math.floor(Math.random() * numInnerTypes)];
-    } else {
-      type = markTypes[Math.floor(Math.random() * markTypes.length)];
-    }
+    type = markTypes[Math.floor(Math.random() * markTypes.length)];
 
     if (i > 5 && type === 'arrow') {
       validType = false;
     }
-
   } while (!validType);
+
   // type = 'arrow';
   prevType = type;
 
