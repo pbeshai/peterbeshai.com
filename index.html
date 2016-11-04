@@ -5,6 +5,9 @@ twitter: true
 twitter_type: summary
 description: Peter Beshai's blog - data visualization, basketball, and web development.
 img: /images/profile.jpg
+experiments:
+  - url: /vis/mandala/
+    title: Mandala Generator
 projects:
   - url: http://www.cancerbrowser.org/
     title: Harvard Medical School Breast Cancer Browser
@@ -72,6 +75,18 @@ blog:
   <li><a class="post_title" href="{{ post.url }}">{{ post.title }}</a></li>
   {% endfor %}
   {% for post in page.projects %}
+  <li><a class="post_title" href="{{ post.url }}">{{ post.title }}</a></li>
+  {% endfor %}
+  </ul>
+</section>
+
+<section>
+  <h3 class="list-header">Experiments</h3>
+  <ul class="list-unstyled posts">
+  {% for post in site.categories.experiments %}
+  <li><a class="post_title" href="{{ post.url }}">{{ post.title }}</a></li>
+  {% endfor %}
+  {% for post in page.experiments %}
   <li><a class="post_title" href="{{ post.url }}">{{ post.title }}</a></li>
   {% endfor %}
   </ul>
