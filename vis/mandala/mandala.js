@@ -1,16 +1,33 @@
 // mark types
-const markTypes = ['arc', 'point', 'diagonalUp', 'diagonalDown', 'x', 'square'];
+// const markTypes = ['diagonalUp', 'diagonalDown', 'x', 'arc', 'point']; // 'square'];
+const markTypes = ['x', 'arrow', 'arc', 'point']; // 'square'];
+const numInnerTypes = 2;
+const animate = true;
+const numMarks = 30;
 
 // generate random data
 let cumulativeSize = 0;
-const data = d3.range(30).map((d, i) => {
+let prevType;
+const data = d3.range(numMarks).map((d, i) => {
   let type;
-  // more likely to use lines in first few
-  if (i < 3 && Math.random() < 0.5) {
-    type = markTypes[Math.floor(Math.random() * 2) + 2];
-  } else {
-    type = markTypes[Math.floor(Math.random() * 4)];
-  }
+  let validType;
+  do {
+    validType = true;
+    // more likely to use lines in first few
+    if (i < 3 && Math.random() < 0.5) {
+      type = markTypes[Math.floor(Math.random() * numInnerTypes)];
+    } else {
+      type = markTypes[Math.floor(Math.random() * markTypes.length)];
+    }
+
+    if (i > 5 && type === 'arrow') {
+      validType = false;
+    }
+
+  } while (!validType);
+  // type = 'arrow';
+  prevType = type;
+
   let item;
 
   if (type === 'point') {
@@ -50,6 +67,25 @@ const data = d3.range(30).map((d, i) => {
       y1: cumulativeSize + size,
       y2: cumulativeSize,
     };
+  } else if (type === 'x') {
+    const size = Math.ceil(Math.random() * 10) + 3;
+    item = {
+      type,
+      size,
+      cumulativeSize,
+      y1: cumulativeSize + size,
+      y2: cumulativeSize,
+    };
+  } else if (type === 'arrow') {
+    const size = Math.ceil(Math.random() * 10) + 3;
+    item = {
+      type,
+      size,
+      cumulativeSize,
+      y1: cumulativeSize + size,
+      yMid: cumulativeSize + (size / 2),
+      y2: cumulativeSize,
+    };
   } else {
     item = { size: 0 };
   }
@@ -80,7 +116,6 @@ const plotAreaHeight = height - padding.top - padding.bottom;
 
 // size of an individual slice
 const numSlices = 32;
-const sliceWidth = plotAreaWidth / 20;
 const sliceHeight = plotAreaHeight / 2;
 const sliceAngle = (2 * Math.PI) / numSlices;
 
@@ -114,17 +149,20 @@ svg.append('rect')
 
 // the main <g> where all the chart content goes inside
 const g = svg.append('g')
-  .attr('transform', `translate(${padding.left} ${padding.top}) rotate(0 ${plotAreaWidth / 2} ${plotAreaHeight / 2})`);
+  .attr('transform', `translate(${padding.left} ${padding.top})`);
 
-g.transition()
-  .duration(2500)
-  .attrTween('transform', function () {
-    return d3.interpolateString(`translate(${padding.left} ${padding.top}) rotate(0 ${plotAreaWidth / 2} ${plotAreaHeight / 2})`,
-      `translate(${padding.left} ${padding.top}) rotate(360 ${plotAreaWidth / 2} ${plotAreaHeight / 2})`);
-  });
+if (animate) {
+  g.transition()
+    .duration(2500)
+    .attrTween('transform', () =>
+      d3.interpolateString(`translate(${padding.left} ${padding.top}) rotate(0 ${plotAreaWidth / 2} ${plotAreaHeight / 2})`,
+        `translate(${padding.left} ${padding.top}) rotate(360 ${plotAreaWidth / 2} ${plotAreaHeight / 2})`));
+}
 
 
 const defs = g.append('defs');
+
+// clip path for slices disabled to allow some slight overlap for things like arcs
 // add the slice as a clip path
 // defs.append('clipPath')
 //   .attr('id', 'slice-clip')
@@ -160,17 +198,23 @@ svg.append('rect')
   .style('fill', 'url(#bg-shading)');
 
 // add in a big clip for all the marks
-defs.append('clipPath')
+const marksClip = defs.append('clipPath')
   .attr('id', 'marks-clip')
   .append('circle')
   .attr('cx', plotAreaWidth / 2)
   .attr('cy', plotAreaHeight / 2)
   .attr('r', 0)
-  .style('fill', '#fff')
-  .transition()
-  .ease(d3.easeLinear)
-  .duration(2000)
-  .attr('r', plotAreaHeight / 2);
+  .style('fill', '#fff');
+
+if (animate) {
+  marksClip.transition()
+    .ease(d3.easeLinear)
+    .duration(2000)
+    .attr('r', (plotAreaHeight / 2) + 5);
+} else {
+  marksClip
+    .attr('r', (plotAreaHeight / 2) + 5);
+}
 
 const gSlices = g.append('g')
   .attr('class', 'slices-group')
@@ -242,9 +286,9 @@ arcs.enter()
 // add diagonal line up
 const diagUp = slice.selectAll('.diagonalUp').data(dataByType.diagonalUp || []);
 
-const dToLine = (d) => {
-  const y1 = yScale(d.y1);
-  const y2 = yScale(d.y2);
+function dToLine(d, y1Key = 'y1', y2Key = 'y2') {
+  const y1 = yScale(d[y1Key]);
+  const y2 = yScale(d[y2Key]);
   const x1 = (sliceHeight - y1) * Math.tan(-sliceAngle / 2);
   const x2 = (sliceHeight - y2) * Math.tan(sliceAngle / 2);
 
@@ -278,34 +322,39 @@ diagDown.enter()
   .style('fill', markColor);
 
 
-// diagUp.enter().append('circle')
-//   .attr('cy', d => yScale(d.y1))
-//   .attr('r', '4')
-//   .style('stroke', '#0bb');
+// add X marks
+const xMarks = slice.selectAll('.x').data(dataByType.x || []);
 
+const xMarkGs = xMarks.enter()
+  .append('g')
+  .attr('class', 'x');
 
-// diagUp.enter().append('circle')
-//   .attr('cy', d => (d.y1))
-//   .classed('circle-g', true)
-//   .attr('r', '4')
-//   .style('stroke', '#00f');
+xMarkGs.append('path')
+  .attr('d', d => toPath(dToLine(d)))
+  .style('stroke', markColor)
+  .style('fill', markColor);
 
-// diagUp.enter().append('circle')
-//   .classed('circle-g', true)
-//   .attr('cx', d => dToLine(d).x1)
-//   .attr('cy', d => dToLine(d).y1)
-//   .attr('r', '4')
-//   .style('stroke', '#f00');
+xMarkGs.append('path')
+  .attr('d', d => toPath(dToLine(d, 'y2', 'y1')))
+  .style('stroke', markColor)
+  .style('fill', markColor);
 
-// diagUp.enter().append('circle')
-//   .classed('circle-g', true)
-//   .attr('cx', d => dToLine(d).x2)
-//   .attr('cy', d => dToLine(d).y2)
-//   .attr('r', '4')
-//   .style('stroke', '#0f0');
+// add X marks
+const arrowMarks = slice.selectAll('.arrow').data(dataByType.arrow || []);
 
-// d3.selectAll('.circle-g')
-  // .attr('transform', `translate(0 ${sliceHeight})`);
+const arrowMarkGs = arrowMarks.enter()
+  .append('g')
+  .attr('class', 'arrow');
+
+arrowMarkGs.append('path')
+  .attr('d', d => toPath(dToLine(d, 'y1', 'yMid')))
+  .style('stroke', markColor)
+  .style('fill', markColor);
+
+arrowMarkGs.append('path')
+  .attr('d', d => toPath(dToLine(d, 'y2', 'yMid')))
+  .style('stroke', markColor)
+  .style('fill', markColor);
 
 
 
