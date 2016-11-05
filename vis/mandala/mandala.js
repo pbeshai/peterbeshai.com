@@ -179,13 +179,15 @@ const mandalaBgGrad = defs.append('radialGradient')
 
 mandalaBgGrad.append('stop')
   .attr('offset', '0%')
-  .attr('stop-color', 'rgba(0, 0, 0, 0)');
+  .attr('stop-color', '#000')
+  .attr('stop-opacity', 0.0);
 
 mandalaBgGrad.append('stop')
   .attr('offset', '100%')
-  .attr('stop-color', 'rgba(0, 0, 0, 0.2)');
+  .attr('stop-color', '#000')
+  .attr('stop-opacity', 0.2);
 
-svg.append('rect')
+svg.insert('rect', 'g')
   .attr('class', 'mandala-bg-shading')
   .attr('width', width)
   .attr('height', height)
