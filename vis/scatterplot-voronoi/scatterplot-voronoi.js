@@ -6,6 +6,10 @@ const data = d3.range(50).map((d, i) => ({
   label: `Point ${i}`,
 }));
 
+// ----------------------------------------------------
+// Build a basic scatterplot
+// ----------------------------------------------------
+
 // outer svg dimensions
 const width = 600;
 const height = 400;
@@ -92,6 +96,11 @@ binding.enter().append('circle')
   .attr('cy', d => yScale(d.y))
   .attr('fill', d => colorScale(d.y));
 
+
+// ----------------------------------------------------
+// Add in Voronoi interaction
+// ----------------------------------------------------
+
 // add in interaction via voronoi
 // initialize text output for highlighted points
 const highlightOutput = container.append('div')
@@ -139,6 +148,19 @@ function highlight(d) {
   }
 }
 
+// callback for when the mouse moves across the overlay
+function mouseMoveHandler() {
+  // get the current mouse position
+  const [mx, my] = d3.mouse(this);
+
+  // use the new diagram.find() function to find the voronoi site closest to
+  // the mouse, limited by max distance defined by voronoiRadius
+  const site = voronoiDiagram.find(mx, my, voronoiRadius);
+
+  // highlight the point if we found one, otherwise hide the highlight circle
+  highlight(site && site.data);
+}
+
 // add the overlay on top of everything to take the mouse events
 g.append('rect')
   .attr('class', 'overlay')
@@ -146,22 +168,16 @@ g.append('rect')
   .attr('height', plotAreaHeight)
   .style('fill', 'red')
   .style('opacity', 0)
-  .on('mousemove', function mouseMoveHandler() {
-    // get the current mouse position
-    const [mx, my] = d3.mouse(this);
-
-    // use the new diagram.find() function to find the voronoi site closest to
-    // the mouse, limited by max distance defined by voronoiRadius
-    const site = voronoiDiagram.find(mx, my, voronoiRadius);
-
-    // highlight the point if we found one, otherwise hide the highlight circle
-    highlight(site && site.data);
-  })
+  .on('mousemove', mouseMoveHandler)
   .on('mouseleave', () => {
     // hide the highlight circle when the mouse leaves the chart
     highlight(null);
   });
 
+
+// ----------------------------------------------------
+// Add a fun click handler to reveal the details of what is happening
+// ----------------------------------------------------
 
 /**
  * Add/remove a visible voronoi diagram and a circle indicating the radius used
