@@ -35,7 +35,7 @@ const data = d3.range(numMarks).map((d, i) => {
       filled: Math.random() > 0.3,
     };
   } else if (type === 'arc') {
-    const size = Math.ceil(Math.random() * 10) + 2;
+    const size = Math.ceil(Math.random() * 20) + 2;
     item = {
       type,
       thickness: Math.round(size / 4),
