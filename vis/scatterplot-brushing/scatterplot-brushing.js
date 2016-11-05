@@ -257,9 +257,12 @@ function toggleQuadtreeDebug() {
   if (g.select('.quadtree').size()) {
     g.select('.quadtree').remove();
     g.select('.quadtree-brushed').remove();
+    d3.select('#reveal-quadtree').text('Reveal the Quadtree');
 
   // otherwise, add in
   } else {
+    d3.select('#reveal-quadtree').text('Hide the Quadtree');
+
     const gQuadtree = g.insert('g', '.circles')
       .attr('class', 'quadtree');
 
