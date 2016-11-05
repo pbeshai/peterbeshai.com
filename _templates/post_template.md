@@ -1,8 +1,11 @@
 ---
 layout: post
 title: TITLE
-twitter: false
 description: TODO
+twitter_type: summary_large_image
+img: false
+demo: false
+github: false
 categories:
 - TODO
 ---
