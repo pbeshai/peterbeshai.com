@@ -234,43 +234,129 @@ gBrush.select('.selection')
 // Add a fun click handler to reveal the details of what is happening
 // ----------------------------------------------------
 
+function quadtreeRect(rect, x1, y1, x2, y2) {
+  var width = x2 - x1;
+  var height = y2 - y1;
+
+  // clip to the edges of the plot area
+  if (x1 + width > plotAreaWidth) {
+    width = plotAreaWidth - x1;
+  }
+
+  if (y1 + height > plotAreaHeight) {
+    height = plotAreaHeight - y1;
+  }
+
+  return rect
+    .attr('class', 'quadtree-node')
+    .attr('x', x1)
+    .attr('y', y1)
+    .attr('width', width)
+    .attr('height', height)
+    .style('fill', 'none')
+    .style('stroke', '#ccc');
+}
+
 function toggleQuadtreeDebug() {
   // remove if there
   if (g.select('.quadtree').size()) {
     g.select('.quadtree').remove();
+    g.select('.quadtree-brushed').remove();
 
   // otherwise, add in
   } else {
     var gQuadtree = g.insert('g', '.circles')
       .attr('class', 'quadtree');
 
+    // add in a group for the brushed parts
+    g.insert('g', '.circles').attr('class', 'quadtree-brushed');
+
     // traverse the quadtree, drawing a rectangle for each node
     quadtree.visit(function (node, x1, y1, x2, y2) {
-      var width = x2 - x1;
-      var height = y2 - y1;
-
-      // clip to the edges of the plot area
-      if (x1 + width > plotAreaWidth) {
-        width = plotAreaWidth - x1;
-      }
-
-      if (y1 + height > plotAreaHeight) {
-        height = plotAreaHeight - y1;
-      }
-
-      gQuadtree.append('rect')
-        .attr('class', 'quadtree-node')
-        .attr('x', x1)
-        .attr('y', y1)
-        .attr('width', width)
-        .attr('height', height)
-        .style('fill', 'none')
-        .style('stroke', 'rgb(186, 167, 218)');
+      quadtreeRect(gQuadtree.append('rect'), x1, y1, x2, y2);
     });
   }
 }
 
-d3.select('#reveal-quadtrees').on('click', function () { return toggleQuadtreeDebug(); });
+// function that animates the quadtree nodes that are searched
+// this is basically a copy of the code from above since it isn't
+// intended to be used outside of the demo, otherwise I could have
+// integrated it there.
+function showBrushedQuadtreeNodes() {
+  // if no quadtree, ignore
+  if (g.select('.quadtree').empty()) {
+    return;
+  }
+
+  var ref = d3.event;
+  var selection = ref.selection;
+
+  // if we have no selection, remove the quadtree highlighting
+  if (!selection) {
+    g.select('.quadtree-brushed').selectAll('*').remove();
+    return;
+  }
+
+  // find the bounding points of the brushed selection box
+  var ref$1 = selection[0];
+  var bx1 = ref$1[0];
+  var by1 = ref$1[1];
+  var ref$2 = selection[1];
+  var bx2 = ref$2[0];
+  var by2 = ref$2[1];
+
+  // begin an array to collect the brushed nodes
+  var brushedNodes = [];
+
+  // traverse the quad tree, skipping branches where we do not overlap
+  // with the brushed selection box. Set a skip flag to true to skip the
+  // root node.
+  var skip = true;
+  quadtree.visit(function (node, x1, y1, x2, y2) {
+    // check that quadtree node intersects
+    var overlaps = rectOverlapsByPoints(x1, y1, x2, y2, bx1, by1, bx2, by2);
+
+    // skip if it doesn't overlap the brush
+    if (!overlaps) {
+      return true;
+    }
+
+    // skip the root node
+    if (!skip) {
+      brushedNodes.push({ x1: x1, y1: y1, x2: x2, y2: y2 });
+    }
+    skip = false;
+
+    // return false so that we traverse into branch (only useful for non-leaf nodes)
+    return false;
+  });
+
+  // update the highlighted brushed nodes
+  var rects = g.select('.quadtree-brushed').selectAll('rect').data(brushedNodes);
+  var entering = rects.enter().append('rect');
+
+  // add in rects, update their positions and animate them
+  entering.merge(rects)
+    .each(function updateQuadtreeBrushedRects(d) {
+      quadtreeRect(d3.select(this), d.x1, d.y1, d.x2, d.y2)
+        .style('fill', '#bbb')
+        .style('fill-opacity', 0)
+        .style('stroke', '#aaa')
+        .style('stroke-opacity', 0);
+    })
+    .transition()
+    .delay(function (d, i) { return i * 30; })
+    .style('fill-opacity', 0.2)
+    .style('stroke-opacity', 0.5);
+
+  rects.exit().remove();
+}
+
+// add namespaced handlers to the brush for the quadtree animations
+brush.on('brush.quadtree end.quadtree', showBrushedQuadtreeNodes);
+
+// add a click listener to the reveal button
+d3.select('#reveal-quadtree').on('click', function () { return toggleQuadtreeDebug(); });
 
 // ----------------------------------------------------
 // Bonus! Add in voronoi on top of the brushing
