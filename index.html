@@ -49,47 +49,47 @@ blog:
 <section>
   <h3 class="list-header">Blog</h3>
   <ul class="list-unstyled posts">
-  {% for post in site.categories.blog %}
-  <li><a class="post_title" href="{{ post.url }}">{{ post.title }}</a></li>
-  {% endfor %}
-  {% for post in page.blog %}
-  <li><a class="post_title" href="{{ post.url }}">{{ post.title }}</a></li>
-  {% endfor %}
+    {% for post in site.categories.blog %}
+    <li><a class="post_title" href="{{ post.url }}">{{ post.title }}</a></li>
+    {% endfor %}
+    {% for post in page.blog %}
+    <li><a class="post_title" href="{{ post.url }}">{{ post.title }}</a></li>
+    {% endfor %}
   </ul>
 </section>
 
 <section>
   <h3 class="list-header">Open Source</h3>
   <ul class="list-unstyled posts">
-  {% for post in site.categories.open_source %}
-  <li><a class="post_title" href="{{ post.url }}">{{ post.title }}</a></li>
-  {% endfor %}
-  {% for post in page.open_source %}
-  <li><a class="post_title" href="{{ post.url }}">{{ post.title }}</a></li>
-  {% endfor %}
+    {% for post in site.categories.open_source %}
+    <li><a class="post_title" href="{{ post.url }}">{{ post.title }}</a></li>
+    {% endfor %}
+    {% for post in page.open_source %}
+    <li><a class="post_title" href="{{ post.url }}">{{ post.title }}</a></li>
+    {% endfor %}
   </ul>
 </section>
 
 <section>
   <h3 class="list-header">Projects</h3>
   <ul class="list-unstyled posts">
-  {% for post in site.categories.projects %}
-  <li><a class="post_title" href="{{ post.url }}">{{ post.title }}</a></li>
-  {% endfor %}
-  {% for post in page.projects %}
-  <li><a class="post_title" href="{{ post.url }}">{{ post.title }}</a></li>
-  {% endfor %}
+    {% for post in site.categories.projects %}
+    <li><a class="post_title" href="{{ post.url }}">{{ post.title }}</a></li>
+    {% endfor %}
+    {% for post in page.projects %}
+    <li><a class="post_title" href="{{ post.url }}">{{ post.title }}</a></li>
+    {% endfor %}
   </ul>
 </section>
 
 <section>
   <h3 class="list-header">Experiments</h3>
   <ul class="list-unstyled posts">
-  {% for post in site.categories.experiments %}
-  <li><a class="post_title" href="{{ post.url }}">{{ post.title }}</a></li>
-  {% endfor %}
-  {% for post in page.experiments %}
-  <li><a class="post_title" href="{{ post.url }}">{{ post.title }}</a></li>
-  {% endfor %}
+    {% for post in site.categories.experiments %}
+    <li><a class="post_title" href="{{ post.url }}">{{ post.title }}</a></li>
+    {% endfor %}
+    {% for post in page.experiments %}
+    <li><a class="post_title" href="{{ post.url }}">{{ post.title }}</a></li>
+    {% endfor %}
   </ul>
 </section>
