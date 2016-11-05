@@ -276,6 +276,10 @@ function toggleQuadtreeDebug() {
   }
 }
 
+// animation ID for making sure we keep our animations consistent when
+// animating in the brushed points in the quadtree
+let animationId;
+
 // function that animates the quadtree nodes that are searched
 // this is basically a copy of the code from above since it isn't
 // intended to be used outside of the demo, otherwise I could have
@@ -316,7 +320,7 @@ function showBrushedQuadtreeNodes() {
 
     // skip the root node
     if (!skip) {
-      brushedNodes.push({ x1, y1, x2, y2 });
+      brushedNodes.push({ x1, y1, x2, y2, node });
     }
     skip = false;
 
@@ -327,6 +331,14 @@ function showBrushedQuadtreeNodes() {
   // update the highlighted brushed nodes
   const rects = g.select('.quadtree-brushed').selectAll('rect').data(brushedNodes);
   const entering = rects.enter().append('rect');
+
+  let brushedDataPoints = [];
+
+  // update animation ID but keep a local copy for the closure checking.
+  // TODO: when I have internet, verify if there's a simpler way to cancel
+  animationId = Math.random();
+  let localAnimationId = animationId;
+  highlightBrushed(brushedDataPoints);
 
   // add in rects, update their positions and animate them
   entering.merge(rects)
@@ -340,7 +352,24 @@ function showBrushedQuadtreeNodes() {
     .transition()
     .delay((d, i) => i * 30)
     .style('fill-opacity', 0.2)
-    .style('stroke-opacity', 0.5);
+    .style('stroke-opacity', 0.5)
+    .on('start', function (d) {
+      // only run if we are still active
+      if (animationId !== localAnimationId) {
+        return;
+      }
+
+      // check if we should add this to the brushed nodes
+      if (!d.node.length) {
+        const datum = d.node.data;
+        const dx = xScale(datum.x);
+        const dy = yScale(datum.y);
+        if (pointInsideRectByPoints(bx1, by1, bx2, by2, dx, dy)) {
+          brushedDataPoints.push(datum)
+          highlightBrushed(brushedDataPoints);
+        }
+      }
+    });
 
   rects.exit().remove();
 }
