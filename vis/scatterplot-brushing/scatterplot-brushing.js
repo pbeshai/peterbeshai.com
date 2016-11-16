@@ -139,25 +139,31 @@ function highlightBrushed(brushedNodes) {
     .remove();
 }
 
+// The following two functions taken from vis-utils: https://github.com/pbeshai/vis-utils
+const X = 0;
+const Y = 1;
+const TOP_LEFT = 0;
+const BOTTOM_RIGHT = 1;
 /**
  * Determines if two rectangles overlap by looking at two pairs of
- * points (r1x1, r1y1), (r1x2, r1y2) for rectangle 1 and similarly
+ * points [[r1x1, r1y1], [r1x2, r1y2]] for rectangle 1 and similarly
  * for rectangle2.
  */
-function rectOverlapsByPoints(r1x1, r1y1, r1x2, r1y2, r2x1, r2y1, r2x2, r2y2) {
-  return (r1x1 <= (r2x2) &&
-          r2x1 <= (r1x2) &&
-          r1y1 <= (r2y2) &&
-          r2y1 <= (r1y2));
+function rectIntersects(rect1, rect2) {
+  return (rect1[TOP_LEFT][X] <= rect2[BOTTOM_RIGHT][X] &&
+          rect2[TOP_LEFT][X] <= rect1[BOTTOM_RIGHT][X] &&
+          rect1[TOP_LEFT][Y] <= rect2[BOTTOM_RIGHT][Y] &&
+          rect2[TOP_LEFT][Y] <= rect1[BOTTOM_RIGHT][Y]);
 }
+
 
 /**
  * Determines if a point is inside a rectangle. The rectangle is
- * defined by two points (rx1, ry1) - (rx2, ry2)
+ * defined by two points [[rx1, ry1], [rx2, ry2]]
  */
-function pointInsideRectByPoints(rx1, ry1, rx2, ry2, px, py) {
-  return rx1 <= px && px <= rx2 &&
-         ry1 <= py && py <= ry2;
+function rectContains(rect, px, py) {
+  return rect[TOP_LEFT][X] <= px && px <= rect[BOTTOM_RIGHT][X] &&
+         rect[TOP_LEFT][Y] <= py && py <= rect[BOTTOM_RIGHT][Y];
 }
 
 // callback when the brush updates / ends
@@ -170,10 +176,6 @@ function updateBrush() {
     return;
   }
 
-  // find the bounding points of the brushed selection box
-  const [bx1, by1] = selection[0];
-  const [bx2, by2] = selection[1];
-
   // begin an array to collect the brushed nodes
   const brushedNodes = [];
 
@@ -181,7 +183,7 @@ function updateBrush() {
   // with the brushed selection box
   quadtree.visit((node, x1, y1, x2, y2) => {
     // check that quadtree node intersects
-    const overlaps = rectOverlapsByPoints(x1, y1, x2, y2, bx1, by1, bx2, by2);
+    const overlaps = rectIntersects(selection, [[x1, y1], [x2, y2]]);
 
     // skip if it doesn't overlap the brush
     if (!overlaps) {
@@ -195,7 +197,7 @@ function updateBrush() {
       const d = node.data;
       const dx = xScale(d.x);
       const dy = yScale(d.y);
-      if (pointInsideRectByPoints(bx1, by1, bx2, by2, dx, dy)) {
+      if (rectContains(selection, dx, dy)) {
         brushedNodes.push(d);
       }
     }
@@ -298,10 +300,6 @@ function showBrushedQuadtreeNodes() {
     return;
   }
 
-  // find the bounding points of the brushed selection box
-  const [bx1, by1] = selection[0];
-  const [bx2, by2] = selection[1];
-
   // begin an array to collect the brushed nodes
   const brushedNodes = [];
 
@@ -311,7 +309,7 @@ function showBrushedQuadtreeNodes() {
   let skip = true;
   quadtree.visit((node, x1, y1, x2, y2) => {
     // check that quadtree node intersects
-    const overlaps = rectOverlapsByPoints(x1, y1, x2, y2, bx1, by1, bx2, by2);
+    const overlaps = rectIntersects(selection, [[x1, y1], [x2, y2]]);
 
     // skip if it doesn't overlap the brush
     if (!overlaps) {
@@ -332,12 +330,11 @@ function showBrushedQuadtreeNodes() {
   const rects = g.select('.quadtree-brushed').selectAll('rect').data(brushedNodes);
   const entering = rects.enter().append('rect');
 
-  let brushedDataPoints = [];
+  const brushedDataPoints = [];
 
   // update animation ID but keep a local copy for the closure checking.
-  // TODO: when I have internet, verify if there's a simpler way to cancel
   animationId = Math.random();
-  let localAnimationId = animationId;
+  const localAnimationId = animationId;
   highlightBrushed(brushedDataPoints);
 
   // add in rects, update their positions and animate them
@@ -353,7 +350,7 @@ function showBrushedQuadtreeNodes() {
     .delay((d, i) => i * 30)
     .style('fill-opacity', 0.2)
     .style('stroke-opacity', 0.5)
-    .on('start', function (d) {
+    .on('start', (d) => {
       // only run if we are still active
       if (animationId !== localAnimationId) {
         return;
@@ -364,8 +361,8 @@ function showBrushedQuadtreeNodes() {
         const datum = d.node.data;
         const dx = xScale(datum.x);
         const dy = yScale(datum.y);
-        if (pointInsideRectByPoints(bx1, by1, bx2, by2, dx, dy)) {
-          brushedDataPoints.push(datum)
+        if (rectContains(selection, dx, dy)) {
+          brushedDataPoints.push(datum);
           highlightBrushed(brushedDataPoints);
         }
       }

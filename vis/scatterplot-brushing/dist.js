@@ -139,25 +139,31 @@ function highlightBrushed(brushedNodes) {
     .remove();
 }
 
+
+var X = 0;
+var Y = 1;
+var TOP_LEFT = 0;
+var BOTTOM_RIGHT = 1;
 /**
  * Determines if two rectangles overlap by looking at two pairs of
- * points (r1x1, r1y1), (r1x2, r1y2) for rectangle 1 and similarly
+ * points [[r1x1, r1y1], [r1x2, r1y2]] for rectangle 1 and similarly
  * for rectangle2.
  */
-function rectOverlapsByPoints(r1x1, r1y1, r1x2, r1y2, r2x1, r2y1, r2x2, r2y2) {
-  return (r1x1 <= (r2x2) &&
-          r2x1 <= (r1x2) &&
-          r1y1 <= (r2y2) &&
-          r2y1 <= (r1y2));
+function rectIntersects(rect1, rect2) {
+  return (rect1[TOP_LEFT][X] <= rect2[BOTTOM_RIGHT][X] &&
+          rect2[TOP_LEFT][X] <= rect1[BOTTOM_RIGHT][X] &&
+          rect1[TOP_LEFT][Y] <= rect2[BOTTOM_RIGHT][Y] &&
+          rect2[TOP_LEFT][Y] <= rect1[BOTTOM_RIGHT][Y]);
 }
+
 
 /**
  * Determines if a point is inside a rectangle. The rectangle is
- * defined by two points (rx1, ry1) - (rx2, ry2)
+ * defined by two points [[rx1, ry1], [rx2, ry2]]
  */
-function pointInsideRectByPoints(rx1, ry1, rx2, ry2, px, py) {
-  return rx1 <= px && px <= rx2 &&
-         ry1 <= py && py <= ry2;
+function rectContains(rect, px, py) {
+  return rect[TOP_LEFT][X] <= px && px <= rect[BOTTOM_RIGHT][X] &&
+         rect[TOP_LEFT][Y] <= py && py <= rect[BOTTOM_RIGHT][Y];
 }
 
 // callback when the brush updates / ends
@@ -171,14 +177,6 @@ function updateBrush() {
     return;
   }
 
-  // find the bounding points of the brushed selection box
-  var ref$1 = selection[0];
-  var bx1 = ref$1[0];
-  var by1 = ref$1[1];
-  var ref$2 = selection[1];
-  var bx2 = ref$2[0];
-  var by2 = ref$2[1];
-
   // begin an array to collect the brushed nodes
   var brushedNodes = [];
 
@@ -186,7 +184,7 @@ function updateBrush() {
   // with the brushed selection box
   quadtree.visit(function (node, x1, y1, x2, y2) {
     // check that quadtree node intersects
-    var overlaps = rectOverlapsByPoints(x1, y1, x2, y2, bx1, by1, bx2, by2);
+    var overlaps = rectIntersects(selection, [[x1, y1], [x2, y2]]);
 
     // skip if it doesn't overlap the brush
     if (!overlaps) {
@@ -200,7 +198,7 @@ function updateBrush() {
       var d = node.data;
       var dx = xScale(d.x);
       var dy = yScale(d.y);
-      if (pointInsideRectByPoints(bx1, by1, bx2, by2, dx, dy)) {
+      if (rectContains(selection, dx, dy)) {
         brushedNodes.push(d);
       }
     }
@@ -304,14 +302,6 @@ function showBrushedQuadtreeNodes() {
     return;
   }
 
-  // find the bounding points of the brushed selection box
-  var ref$1 = selection[0];
-  var bx1 = ref$1[0];
-  var by1 = ref$1[1];
-  var ref$2 = selection[1];
-  var bx2 = ref$2[0];
-  var by2 = ref$2[1];
-
   // begin an array to collect the brushed nodes
   var brushedNodes = [];
 
@@ -321,7 +311,7 @@ function showBrushedQuadtreeNodes() {
   var skip = true;
   quadtree.visit(function (node, x1, y1, x2, y2) {
     // check that quadtree node intersects
-    var overlaps = rectOverlapsByPoints(x1, y1, x2, y2, bx1, by1, bx2, by2);
+    var overlaps = rectIntersects(selection, [[x1, y1], [x2, y2]]);
 
     // skip if it doesn't overlap the brush
     if (!overlaps) {
@@ -345,7 +335,6 @@ function showBrushedQuadtreeNodes() {
   var brushedDataPoints = [];
 
   // update animation ID but keep a local copy for the closure checking.
-  // TODO: when I have internet, verify if there's a simpler way to cancel
   animationId = Math.random();
   var localAnimationId = animationId;
   highlightBrushed(brushedDataPoints);
@@ -374,8 +363,8 @@ function showBrushedQuadtreeNodes() {
         var datum = d.node.data;
         var dx = xScale(datum.x);
         var dy = yScale(datum.y);
-        if (pointInsideRectByPoints(bx1, by1, bx2, by2, dx, dy)) {
-          brushedDataPoints.push(datum)
+        if (rectContains(selection, dx, dy)) {
+          brushedDataPoints.push(datum);
           highlightBrushed(brushedDataPoints);
         }
       }
