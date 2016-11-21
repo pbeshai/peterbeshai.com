@@ -824,12 +824,10 @@ function lineChunked () {
    *
    * @return {Object} { line, initialLine, lineData }
    */
-  function getLineFunctions(lineData, initialRender, _ref5) {
-    var _ref6 = slicedToArray(_ref5, 2);
-
-    var yMin = _ref6[0];
-    var yMax = _ref6[1];
+  function getLineFunctions(lineData, initialRender, yDomain) {
     // eslint-disable-line no-unused-vars
+    var yMax = yDomain[1];
+
     // main line function
     var line = d3Shape.line().x(x).y(y).curve(curve);
     var initialLine = void 0;
@@ -1003,11 +1001,11 @@ function lineChunked () {
   // ------------------------------------------------
   // Define getters and setters
   // ------------------------------------------------
-  function getterSetter(_ref7) {
-    var get = _ref7.get;
-    var set = _ref7.set;
-    var setType = _ref7.setType;
-    var asConstant = _ref7.asConstant;
+  function getterSetter(_ref5) {
+    var get = _ref5.get;
+    var set = _ref5.set;
+    var setType = _ref5.setType;
+    var asConstant = _ref5.asConstant;
 
     return function getSet(newValue) {
       if (arguments.length) {
