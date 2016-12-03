@@ -139,7 +139,7 @@ function highlightBrushed(brushedNodes) {
     .remove();
 }
 
-
+// The following two functions taken from vis-utils: https://github.com/pbeshai/vis-utils
 var X = 0;
 var Y = 1;
 var TOP_LEFT = 0;
@@ -161,9 +161,9 @@ function rectIntersects(rect1, rect2) {
  * Determines if a point is inside a rectangle. The rectangle is
  * defined by two points [[rx1, ry1], [rx2, ry2]]
  */
-function rectContains(rect, px, py) {
-  return rect[TOP_LEFT][X] <= px && px <= rect[BOTTOM_RIGHT][X] &&
-         rect[TOP_LEFT][Y] <= py && py <= rect[BOTTOM_RIGHT][Y];
+function rectContains(rect, point) {
+  return rect[TOP_LEFT][X] <= point[X] && point[X] <= rect[BOTTOM_RIGHT][X] &&
+         rect[TOP_LEFT][Y] <= point[Y] && point[Y] <= rect[BOTTOM_RIGHT][Y];
 }
 
 // callback when the brush updates / ends
@@ -198,7 +198,7 @@ function updateBrush() {
       var d = node.data;
       var dx = xScale(d.x);
       var dy = yScale(d.y);
-      if (rectContains(selection, dx, dy)) {
+      if (rectContains(selection, [dx, dy])) {
         brushedNodes.push(d);
       }
     }
@@ -363,7 +363,7 @@ function showBrushedQuadtreeNodes() {
         var datum = d.node.data;
         var dx = xScale(datum.x);
         var dy = yScale(datum.y);
-        if (rectContains(selection, dx, dy)) {
+        if (rectContains(selection, [dx, dy])) {
           brushedDataPoints.push(datum);
           highlightBrushed(brushedDataPoints);
         }

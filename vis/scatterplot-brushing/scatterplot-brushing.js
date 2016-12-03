@@ -161,9 +161,9 @@ function rectIntersects(rect1, rect2) {
  * Determines if a point is inside a rectangle. The rectangle is
  * defined by two points [[rx1, ry1], [rx2, ry2]]
  */
-function rectContains(rect, px, py) {
-  return rect[TOP_LEFT][X] <= px && px <= rect[BOTTOM_RIGHT][X] &&
-         rect[TOP_LEFT][Y] <= py && py <= rect[BOTTOM_RIGHT][Y];
+function rectContains(rect, point) {
+  return rect[TOP_LEFT][X] <= point[X] && point[X] <= rect[BOTTOM_RIGHT][X] &&
+         rect[TOP_LEFT][Y] <= point[Y] && point[Y] <= rect[BOTTOM_RIGHT][Y];
 }
 
 // callback when the brush updates / ends
@@ -197,7 +197,7 @@ function updateBrush() {
       const d = node.data;
       const dx = xScale(d.x);
       const dy = yScale(d.y);
-      if (rectContains(selection, dx, dy)) {
+      if (rectContains(selection, [dx, dy])) {
         brushedNodes.push(d);
       }
     }
@@ -361,7 +361,7 @@ function showBrushedQuadtreeNodes() {
         const datum = d.node.data;
         const dx = xScale(datum.x);
         const dy = yScale(datum.y);
-        if (rectContains(selection, dx, dy)) {
+        if (rectContains(selection, [dx, dy])) {
           brushedDataPoints.push(datum);
           highlightBrushed(brushedDataPoints);
         }
