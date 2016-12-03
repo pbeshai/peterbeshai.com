@@ -17,4 +17,4 @@ post_filepath = File.join(TARGET_DIR, post_filename)
 # move the draft over to publish it
 FileUtils.mv(draft_path, post_filepath)
 
-puts "moved #{draft_filepath} => #{post_filepath}"
+puts "moved #{draft_path} => #{post_filepath}"
