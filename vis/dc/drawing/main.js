@@ -204,6 +204,10 @@ function setup() {
     .on('mousedown', function () {
       // add a flag to indicate we are drawing when the mouse is pressed down
       app.drawing = true;
+
+      // make it so clicking without drag still draws a mark
+      addMark(app.cursor);
+      updateMarks();
     })
     .on('mouseup', function () {
       // flag that we are no longer drawing when mouse is released
