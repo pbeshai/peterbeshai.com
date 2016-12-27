@@ -14,6 +14,11 @@ var app = {
 var refs = {};
 
 /**
+ * Define constants here
+ */
+var MAX_POINTS = 100;
+
+/**
  * A helper function to update how the status shows up in
  * the application. For example, it should ensure that the
  * selected color is shown accurately.
@@ -95,6 +100,29 @@ function updateCursor() {
 }
 
 /**
+ * Draw the actual marks for the picture
+ */
+function updateMarks() {
+  var circles = refs.marks.selectAll('circle')
+    .data(app.marks, function (d) { return d.id; });
+
+  var circlesEnter = circles.enter()
+    .append('circle')
+    .attr('r', 10)
+    .attr('cx', function (d) { return d.x; })
+    .attr('cy', function (d) { return d.y; })
+    .style('fill', function (d) { return d.color; })
+    .style('opacity', 1);
+
+  circles.exit()
+    .transition()
+    .delay(function (d, i) { return i * 5; })
+    .attr('r', 0)
+    .style('opacity', 0)
+    .remove();
+}
+
+/**
  * Function to call when something changes in the application and we want
  * it to update to reflect the new state.
  */
@@ -107,6 +135,33 @@ function update() {
 
   // update the cursor to reflect the selected color
   updateCursor();
+
+  // update the drawing to show all the marks
+  updateMarks();
+}
+
+/**
+ * Helper function to add in a mark to the marks dataset
+ */
+function addMark(position) {
+  var color = app.color;
+  var index = (app.lastMarkIndex + 1) % MAX_POINTS;
+
+  app.marks[index] = {
+    id: Math.random(),
+    x: position[0],
+    y: position[1],
+    color: color,
+  };
+  app.lastMarkIndex += 1;
+}
+
+/**
+ * Helper function to reset mark data
+ */
+function resetMarks() {
+  app.marks = [];
+  app.lastMarkIndex = -1;
 }
 
 /**
@@ -116,6 +171,10 @@ function setup() {
   // select the svg and the cursor in two variables
   refs.svg = d3.select('#drawing-svg');
   refs.cursor = refs.svg.select('.cursor');
+  refs.marks = refs.svg.select('.marks');
+
+  // initialize the marks data to nothing
+  resetMarks();
 
   // initialize mouse listener for cursor
   refs.svg
@@ -126,11 +185,36 @@ function setup() {
 
       // update the cursor with new X and Y position
       updateCursor();
+
+      // if we are drawing, update the drawing data
+      if (app.drawing) {
+        addMark(app.cursor);
+        updateMarks();
+      }
     })
     .on('mouseleave', function () {
       // when the cursor leaves the drawing area, remove the cursor
       app.cursor = undefined;
+
+      // turn off drawing if the mouse leaves the drawing area
+      app.drawing = false;
+
       updateCursor();
+    })
+    .on('mousedown', function () {
+      // add a flag to indicate we are drawing when the mouse is pressed down
+      app.drawing = true;
+    })
+    .on('mouseup', function () {
+      // flag that we are no longer drawing when mouse is released
+      app.drawing = false;
+    });
+
+  // add click handler for the clear button to reset the drawing
+  d3.select('.clear-btn')
+    .on('click', function () {
+      resetMarks();
+      update();
     });
 }
 
