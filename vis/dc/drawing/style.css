@@ -1,0 +1,30 @@
+body {
+  font-family: 'Proxima Nova', 'proxima-nova', 'helvetica neue', sans-serif;
+  background: #fff;
+  color: #333;
+  -webkit-font-smoothing: antialiased;
+  position: relative;
+  padding: 15px;
+}
+
+h1, h2, h3, h4, h5 {
+  margin: 0.5em 0 0.5em;
+}
+
+/* Activity 1 */
+.selected-color-swatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+}
+
+.palette-btn {
+  width: 30px;
+  height: 30px;
+  border: 0;
+  vertical-align: top;
+}
+
+.palette-btn.active {
+  border: 2px dotted #fff;
+}

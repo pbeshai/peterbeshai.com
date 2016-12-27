@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="normalize.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>Drawing with D3</h1>
+
+  <!--
+    We can show the current status of the drawing application
+    here (e.g., the selected color)
+  -->
+  <div class="status">
+    <div class="selected-color">
+      You are drawing with
+      <span class="selected-color-swatch"></span>
+      <span class="selected-color-value">
+        <!-- the value of the selected color will show up here -->
+      </span>
+    </div>
+  </div>
+
+  <!-- Add a container where the color selecting palette will appear -->
+  <div class="color-selector">
+    <h4>Change Color</h4>
+    <div class="palette"></div>
+  </div>
+
+  <script src="d3.v4.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
