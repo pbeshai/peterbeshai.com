@@ -28,6 +28,18 @@
     <div class="palette"></div>
   </div>
 
+
+  <!-- The main drawing SVG -->
+  <div class="drawing-area">
+    <svg id="drawing-svg" width="640" height="480">
+      <rect style="fill: #eee" width="640" height="480" />
+      <g class="marks"></g>
+
+      <circle class="cursor" r="10" />
+    </svg>
+  </div>
+
+
   <script src="d3.v4.js"></script>
   <script src="main.js"></script>
 </body>

@@ -28,3 +28,17 @@ h1, h2, h3, h4, h5 {
 .palette-btn.active {
   border: 2px dotted #fff;
 }
+
+
+/* Activity 2 */
+.drawing-area {
+  margin: 20px 0;
+  cursor: none;
+}
+
+.cursor {
+  fill: none;
+  fill-opacity: 0.6;
+  stroke: rgba(0, 0, 0, 0.4);
+  stroke-width: 3px;
+}

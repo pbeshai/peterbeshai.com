@@ -8,6 +8,10 @@ var app = {
   color: '#000',
 };
 
+/**
+ * For convenience, keep references to d3 selected nodes
+ */
+var refs = {};
 
 /**
  * A helper function to update how the status shows up in
@@ -70,6 +74,27 @@ function updatePalette() {
 }
 
 /**
+ * Ensures the cursor is drawn at its current position with the correct
+ * color
+ */
+function updateCursor() {
+  // if the cursor has coordinates, draw it
+  if (app.cursor) {
+    refs.cursor
+      .style('display', '')
+      .style('stroke', app.color)
+      .style('fill', app.color)
+      .attr('cx', app.cursor[0])
+      .attr('cy', app.cursor[1]);
+
+  // otherwise hide it
+  } else {
+    refs.cursor
+      .style('display', 'none');
+  }
+}
+
+/**
  * Function to call when something changes in the application and we want
  * it to update to reflect the new state.
  */
@@ -79,14 +104,43 @@ function update() {
 
   // generate the palette of colors to choose from
   updatePalette();
+
+  // update the cursor to reflect the selected color
+  updateCursor();
 }
 
+/**
+ * Function to run initial setup for the app. Only run once.
+ */
+function setup() {
+  // select the svg and the cursor in two variables
+  refs.svg = d3.select('#drawing-svg');
+  refs.cursor = refs.svg.select('.cursor');
 
+  // initialize mouse listener for cursor
+  refs.svg
+    .on('mousemove', function () {
+      // store mouse x and y position in app state (it's an array with X
+      // at [0] and Y at [1])
+      app.cursor = d3.mouse(this);
+
+      // update the cursor with new X and Y position
+      updateCursor();
+    })
+    .on('mouseleave', function () {
+      // when the cursor leaves the drawing area, remove the cursor
+      app.cursor = undefined;
+      updateCursor();
+    });
+}
 
 /**
  * Main function to initialize the application
  */
 function main() {
+  // run initial setup
+  setup();
+
   // update the application to reflect the initial state
   update();
 }
