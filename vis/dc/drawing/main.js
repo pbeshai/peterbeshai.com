@@ -126,6 +126,16 @@ function updateMarks() {
     .attr('r', 0)
     .style('opacity', 0)
     .remove();
+  if (!app.marks.length) {
+    circles.exit().remove();
+  } else {
+    circles.exit()
+      .transition()
+      .delay(function (d) { return delayScale(d.id); })
+      .attr('r', 0)
+      .style('opacity', 0)
+      .remove();
+  }
 }
 
 /**
