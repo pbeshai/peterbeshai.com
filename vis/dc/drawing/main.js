@@ -114,9 +114,15 @@ function updateMarks() {
     .style('fill', function (d) { return d.color; })
     .style('opacity', 1);
 
+
+  // use the ID min and max as the domain for a delay scale so that
+  // things disappear in the order they appeared
+  const idExtent = d3.extent(app.marks, function (d) { return d.id; });
+  const delayScale = d3.scaleLinear().domain(idExtent).range([0, 300]);
+
   circles.exit()
     .transition()
-    .delay(function (d, i) { return i * 5; })
+    .delay(function (d) { return delayScale(d.id); })
     .attr('r', 0)
     .style('opacity', 0)
     .remove();
@@ -148,7 +154,7 @@ function addMark(position) {
   var index = (app.lastMarkIndex + 1) % MAX_POINTS;
 
   app.marks[index] = {
-    id: Math.random(),
+    id: app.lastMarkIndex,
     x: position[0],
     y: position[1],
     color: color,
