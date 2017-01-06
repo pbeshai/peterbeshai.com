@@ -3,7 +3,7 @@ const d3 = require('d3');
 
 const numPoints = 100000;
 const animationTime = 2000;
-const indexDelay = 1 / numPoints;
+const indexDelay = 800 / numPoints;
 const pointSize = 2;
 
 const points = d3.range(numPoints).map(() => {
