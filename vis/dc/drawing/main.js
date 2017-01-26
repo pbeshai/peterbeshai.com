@@ -11,7 +11,14 @@ var app = {
 /**
  * For convenience, keep references to d3 selected nodes
  */
-var refs = {};
+var svg;
+var cursor;
+var marks;
+
+/**
+ * ID Sequence global
+ */
+var markIdSequence = 0;
 
 /**
  * Define constants here
@@ -85,7 +92,7 @@ function updatePalette() {
 function updateCursor() {
   // if the cursor has coordinates, draw it
   if (app.cursor) {
-    refs.cursor
+    cursor
       .style('display', '')
       .style('stroke', app.color)
       .style('fill', app.color)
@@ -94,7 +101,7 @@ function updateCursor() {
 
   // otherwise hide it
   } else {
-    refs.cursor
+    cursor
       .style('display', 'none');
   }
 }
@@ -103,9 +110,11 @@ function updateCursor() {
  * Draw the actual marks for the picture
  */
 function updateMarks() {
-  var circles = refs.marks.selectAll('circle')
+  // bind the marks data to the marks circles
+  var circles = marks.selectAll('circle')
     .data(app.marks, function (d) { return d.id; });
 
+  // add new circles to entering data
   var circlesEnter = circles.enter()
     .append('circle')
     .attr('r', 10)
@@ -114,24 +123,14 @@ function updateMarks() {
     .style('fill', function (d) { return d.color; })
     .style('opacity', 1);
 
-
-  // use the ID min and max as the domain for a delay scale so that
-  // things disappear in the order they appeared
-  const idExtent = d3.extent(app.marks, function (d) { return d.id; });
-  const delayScale = d3.scaleLinear().domain(idExtent).range([0, 300]);
-
-  circles.exit()
-    .transition()
-    .delay(function (d) { return delayScale(d.id); })
-    .attr('r', 0)
-    .style('opacity', 0)
-    .remove();
+  // remove exiting circles
   if (!app.marks.length) {
     circles.exit().remove();
   } else {
     circles.exit()
+      .filter(':not(.exiting)')
+      .classed('exiting', true)
       .transition()
-      .delay(function (d) { return delayScale(d.id); })
       .attr('r', 0)
       .style('opacity', 0)
       .remove();
@@ -160,16 +159,21 @@ function update() {
  * Helper function to add in a mark to the marks dataset
  */
 function addMark(position) {
-  var color = app.color;
-  var index = (app.lastMarkIndex + 1) % MAX_POINTS;
-
-  app.marks[index] = {
-    id: app.lastMarkIndex,
+  // create the mark data object
+  var mark = {
+    id: markIdSequence++,
     x: position[0],
     y: position[1],
-    color: color,
+    color: app.color,
   };
-  app.lastMarkIndex += 1;
+
+  // add the mark data object to the marks dataset
+  app.marks.push(mark);
+
+  // if there are too many marks, remove the oldest one.
+  if (app.marks.length > MAX_POINTS) {
+    app.marks.shift();
+  }
 }
 
 /**
@@ -177,7 +181,6 @@ function addMark(position) {
  */
 function resetMarks() {
   app.marks = [];
-  app.lastMarkIndex = -1;
 }
 
 /**
@@ -185,15 +188,15 @@ function resetMarks() {
  */
 function setup() {
   // select the svg and the cursor in two variables
-  refs.svg = d3.select('#drawing-svg');
-  refs.cursor = refs.svg.select('.cursor');
-  refs.marks = refs.svg.select('.marks');
+  svg = d3.select('#drawing-svg');
+  cursor = svg.select('.cursor');
+  marks = svg.select('.marks');
 
   // initialize the marks data to nothing
   resetMarks();
 
   // initialize mouse listener for cursor
-  refs.svg
+  svg
     .on('mousemove', function () {
       // store mouse x and y position in app state (it's an array with X
       // at [0] and Y at [1])
@@ -211,11 +214,10 @@ function setup() {
     .on('mouseleave', function () {
       // when the cursor leaves the drawing area, remove the cursor
       app.cursor = undefined;
+      updateCursor();
 
       // turn off drawing if the mouse leaves the drawing area
       app.drawing = false;
-
-      updateCursor();
     })
     .on('mousedown', function () {
       // add a flag to indicate we are drawing when the mouse is pressed down
