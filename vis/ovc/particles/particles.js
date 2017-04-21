@@ -9,6 +9,7 @@ window.Particles = (function (d3) {
     particleSizeSpeed: 0.02,
     line: {
       stroke: '#d39e4c',
+      strokeWidth: 1,
       strokeDashArray: [2, 2],
       strokeDashChance: 0.75, // chance that a given line is dashed
       minOpacity: 0,
@@ -218,6 +219,7 @@ window.Particles = (function (d3) {
       }
     }
     context.lineTo(p2.x, p2.y);
+    context.lineWidth = options.line.strokeWidth;
     context.strokeStyle = options.line.stroke;
     context.stroke();
   }
