@@ -13,14 +13,30 @@ experiments:
   - url: /vis/canvas-particle-orb
     title: Canvas Particle Orb
 projects:
+  - url: http://viz.measurementlab.net/
+    title: Measurement Lab Visualizations
+    description: A comprehensive data pipeline, API, and visualization system for over 200 million internet speed tests across the world.
+    year: 2016
+    company: Bocoup
   - url: http://www.cancerbrowser.org/
     title: Harvard Medical School Breast Cancer Browser
+    description: An online tool for exploring and visualizing the results of a multitude of different experiments focused on how various breast cancer cell lines respond to a number of different perturbagens.
+    year: 2016
+    company: Bocoup
   - url: https://openvisconf.com/2016/#videos
     title: OpenVis Conf 2016 Videos
+    description: An interface to navigate through videos from OpenVis Conf powered by text analysis of the transcripts and image extraction from the videos.
+    year: 2016
+    company: Bocoup
   - url: http://buckets.peterbeshai.com/app/
     title: "Buckets: NBA Shot Visualization"
+    description: An information-dense dashboard exploring shooting performance in the NBA from a variety of visual perspectives.
+    year: 2014
+    company: Personal
   - url: http://do.peterbeshai.com/academic/projects.html
     title: "Academic Projects"
+    description: Find information about various projects I completed during my Master's degree.
+    year: 2012-2014
 open_source:
   - url: https://github.com/gabrielflorit/blockup
     title: blockup
@@ -76,8 +92,10 @@ blog:
     {% for post in sortedBlog %}
     <li>
       <a class="post-item-title" href="{{ post.url }}">{{ post.title }}</a>
-      <span class="post-item-date">{{ post.date | date: '%B %-d, %Y' }}</span>
-      <span class="post-item-host">{{ post.host }}</span>
+      <div class="post-item-details">
+        <span class="post-item-date">{{ post.date | date: '%B %-d, %Y' }}</span>
+        <span class="post-item-host">{{ post.host }}</span>
+      </div>
     </li>
     {% endfor %}
   </ul>
@@ -102,7 +120,15 @@ blog:
     <li><a class="post-item-title" href="{{ post.url }}">{{ post.title }}</a></li>
     {% endfor %}
     {% for post in page.projects %}
-    <li><a class="post-item-title" href="{{ post.url }}">{{ post.title }}</a></li>
+    <li>
+      <a class="post-item-title" href="{{ post.url }}">{{ post.title }}</a>
+      <div class="post-item-details">
+        <p class="post-item-description">
+          {{ post.description }}
+          <span class="post-item-date">Made in {{ post.year }}.</span>
+        </p>
+      </div>
+    </li>
     {% endfor %}
   </ul>
 </section>

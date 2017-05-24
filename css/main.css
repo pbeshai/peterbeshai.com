@@ -66,7 +66,7 @@ footer {
 }
 
 .main-header {
-  margin-bottom: 40px;
+  margin-bottom: 3rem;
 }
 .main-header-inner {
   position: relative;
@@ -166,16 +166,33 @@ section {
   margin-bottom: 3.5rem;
 }
 
-
-.post-item-title {
+.posts li {
+  line-height: 1;
+  margin-bottom: 1em;
 }
 
-.post-item-date, .post-item-host {
+.post-item-title {
+  margin-right: 0.5em;
+}
+
+.post-item-details {
+  // display: inline-block;
   font-family: 'Proxima Nova', 'proxima-nova', 'helvetica neue', sans-serif;
   color: #bbb;
   font-size: 1.6rem;
-  margin-left: 0.5em;
   white-space: nowrap;
+  margin-top: 0.25em;
+}
+
+.post-item-description {
+  white-space: normal;
+  line-height: 1.4;
+  color: #888;
+}
+
+.post-item-date {
+  margin-right: 0.5em;
+  color: #bbb;
 }
 
 .post-item-host {
@@ -207,6 +224,10 @@ section {
 .main-body {
   font-family: Georgia, serif;
   font-size: 1.8rem;
+}
+
+.main-body section {
+  max-width: 700px;
 }
 
 
