@@ -4,6 +4,7 @@ title: Scatterplots in D3 with Voronoi Interaction
 twitter_type: summary_large_image
 description: In this post, I explain how to add hover behavior to a scatterplot using D3's Voronoi diagram capabilities without actually drawing the Voronoi polygons.
 img: /vis/scatterplot-voronoi/preview.png
+banner: /images/posts/voronoi_scatter.png
 demo: /vis/scatterplot-voronoi/
 github: https://github.com/pbeshai/pbeshai.github.io/tree/master/vis/scatterplot-voronoi
 categories:

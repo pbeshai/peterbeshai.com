@@ -117,7 +117,6 @@ footer {
 @media screen and (max-width: 800px) {
   .main-header-inner {
     padding-top: 20px;
-    padding-left: 10px;
   }
 }
 
@@ -171,6 +170,22 @@ section {
   margin-bottom: 1em;
 }
 
+.posts-with-banner li {
+  margin-top: 2.5em;
+}
+.posts-with-banner li:first-child {
+  margin-top: 0;
+}
+
+
+
+.post-item-image {
+  display: block;
+  width: 100%;
+  max-height: 120px;
+  margin-bottom: 7px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+}
 .post-item-title {
   margin-right: 0.5em;
 }

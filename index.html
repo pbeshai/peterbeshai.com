@@ -103,22 +103,27 @@ blog:
     title: Smoothly animate thousands of points with HTML5 Canvas and D3
     date: 2017-03-16 00:00:00 +0000
     host: bocoup.com
+    banner: images/posts/canvas1000.jpg
   - url: https://bocoup.com/weblog/showing-missing-data-in-line-charts
     title:  Showing Missing Data in Line Charts
     date: 2016-09-20 00:00:00 +0000
     host: bocoup.com
+    banner: images/posts/missing_data_line.png
   - url: https://bocoup.com/weblog/improving-d3-path-animation
     title:  Improving D3 Path Animation
     date: 2016-09-14 00:00:00 +0000
     host: bocoup.com
+    banner: images/posts/path_animation.png
   - url: https://medium.com/@pbesh/react-and-vega-an-alternative-visualization-example-cd76e07dc1cd#.d3cx0asd0
     title:  "React and Vega: An Alternative Visualization Example"
     date: 2016-03-01 00:00:00 +0000
     host: medium.com
+    banner: images/posts/react_vega_blog_banner.jpg
   - url: https://medium.com/@pbesh/linked-highlighting-with-react-d3-js-and-reflux-16e9c0b2210b
     title:  Linked Highlighting with React, D3.js and Reflux
     date: 2015-05-04 00:00:00 +0000
     host: medium.com
+    banner: images/posts/react_d3_blog_banner.jpg
 ---
 <section>
   {% assign postsArray = "" | split: "" %}
@@ -130,29 +135,14 @@ blog:
   {% endfor %}
   {% assign sortedBlog = postsArray | sort: "date" | reverse %}
   <h3 class="list-header">Blog</h3>
-  <ul class="list-unstyled posts">
+  <ul class="list-unstyled posts posts-with-banner">
     {% for post in sortedBlog %}
     <li>
+      {% if post.banner %}<img src="{{ post.banner }}" class="post-item-image" />{% endif %}
       <a class="post-item-title" href="{{ post.url }}">{{ post.title }}</a>
       <div class="post-item-details">
         <span class="post-item-date">{{ post.date | date: '%B %-d, %Y' }}</span>
         <span class="post-item-host">{{ post.host }}</span>
-      </div>
-    </li>
-    {% endfor %}
-  </ul>
-</section>
-
-<section>
-  <h3 class="list-header">Open Source</h3>
-  <ul class="list-unstyled posts">
-    {% for post in page.open_source %}
-    <li>
-      <a class="post-item-title" href="{{ post.url }}">{{ post.title }}</a>
-      <div class="post-item-details">
-        <p class="post-item-description">
-          {{ post.description }}
-        </p>
       </div>
     </li>
     {% endfor %}
@@ -192,3 +182,20 @@ blog:
     {% endfor %}
   </ul>
 </section>
+
+<section>
+  <h3 class="list-header">Open Source</h3>
+  <ul class="list-unstyled posts">
+    {% for post in page.open_source %}
+    <li>
+      <a class="post-item-title" href="{{ post.url }}">{{ post.title }}</a>
+      <div class="post-item-details">
+        <p class="post-item-description">
+          {{ post.description }}
+        </p>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+
