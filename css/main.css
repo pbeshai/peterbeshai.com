@@ -182,7 +182,7 @@ section {
 .post-item-image {
   display: block;
   width: 100%;
-  margin-bottom: 7px;
+  margin-bottom: 12px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.07);
 }
 .post-item-title {
