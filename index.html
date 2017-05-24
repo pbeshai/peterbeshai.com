@@ -51,25 +51,31 @@ projects:
     description: A comprehensive data pipeline, API, and visualization system for over 200 million internet speed tests across the world.
     year: 2016
     company: Bocoup
+    banner: images/projects/mlab_banner.png
   - url: http://www.cancerbrowser.org/
     title: Harvard Medical School Breast Cancer Browser
     description: An online tool for exploring and visualizing the results of a multitude of different experiments focused on how various breast cancer cell lines respond to a number of different perturbagens.
     year: 2016
     company: Bocoup
+    banner: images/projects/hms_banner.jpg
   - url: https://openvisconf.com/2016/#videos
     title: OpenVis Conf 2016 Videos
     description: An interface to navigate through videos from OpenVis Conf powered by text analysis of the transcripts and image extraction from the videos.
     year: 2016
     company: Bocoup
+    banner: images/projects/ovc_videos_banner.jpg
   - url: http://buckets.peterbeshai.com/app/
     title: "Buckets: NBA Shot Visualization"
     description: An information-dense dashboard exploring shooting performance in the NBA from a variety of visual perspectives.
     year: 2014
-    company: Personal
+    company: UBC
+    banner: images/projects/buckets_banner.jpg
   - url: http://do.peterbeshai.com/academic/projects.html
     title: "Academic Projects"
     description: Find information about various projects I completed during my Master's degree.
     year: 2012-2014
+    company: UBC
+    banner: images/projects/academic_projects_banner.jpg
 open_source:
   - url: https://github.com/gabrielflorit/blockup
     title: blockup
@@ -153,14 +159,19 @@ blog:
 
 <section>
   <h3 class="list-header">Projects</h3>
-  <ul class="list-unstyled posts">
+  <ul class="list-unstyled posts posts-with-banner">
     {% for post in page.projects %}
     <li>
-      <a class="post-item-title" href="{{ post.url }}">{{ post.title }}</a>
+      <a class="post-item-title" href="{{ post.url }}">
+        {% if post.banner %}<img src="{{ post.banner }}" class="post-item-image" />{% endif %}
+        {{ post.title }}
+      </a>
       <div class="post-item-details">
         <p class="post-item-description">
           {{ post.description }}
-          <span class="post-item-date">Made in {{ post.year }}.</span>
+          <span class="post-item-date">
+            Made in {{ post.year }}{% if post.company %} at {{ post.company }}{% endif %}.
+          </span>
         </p>
       </div>
     </li>
