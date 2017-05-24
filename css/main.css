@@ -51,7 +51,6 @@ footer {
   top: 58px;
   font-size: 0.8em;
   white-space: nowrap;
-  text-transform: uppercase;
   color: #999;
   transition: .5s color;
 }
@@ -71,7 +70,7 @@ footer {
 }
 .main-header-inner {
   position: relative;
-  padding: 40px 0 10px 120px;
+  padding: 40px 0 10px;
 }
 .main-header .profile {
   width: 100px;
@@ -80,34 +79,42 @@ footer {
 }
 
 .main-header h1 {
-  font-weight: 800;
-  font-size: 42px;
-  margin-bottom: 15px;
-  text-transform: uppercase;
+  font-weight: 200;
+  font-size: 3.6rem;
+  margin-bottom: 11px;
   line-height: 1;
 }
 
+.main-header h1 a {
+  color: #444;
+}
+.main-header h1 a:hover {
+  color: #666;
+  text-decoration: none;
+}
+
 .main-header h2 {
-  font-size: 18px;
+  font-size: 1.8rem;
   font-weight: 400;
   margin-bottom: 10px;
   line-height: 1;
+  color: #888;
+}
+
+.main-header strong {
+  font-weight: 400;
+  color: #444;
 }
 
 .main-header p {
   margin-bottom: 0;
-  font-size: 16px;
+  font-size: 1.6rem;
   line-height: 1;
+  color: #888;
 }
 
 
 @media screen and (max-width: 800px) {
-  .main-header .profile {
-    position: static;
-    display: block;
-    margin-bottom: 20px;
-  }
-
   .main-header-inner {
     padding-top: 20px;
     padding-left: 10px;
@@ -159,6 +166,25 @@ section {
   margin-bottom: 3.5rem;
 }
 
+
+.post-item-title {
+}
+
+.post-item-date, .post-item-host {
+  font-family: 'Proxima Nova', 'proxima-nova', 'helvetica neue', sans-serif;
+  color: #bbb;
+  font-size: 1.6rem;
+  margin-left: 0.5em;
+  white-space: nowrap;
+}
+
+.post-item-host {
+  color: #ccc;
+  font-style: italic;
+  font-size: 1.4rem;
+}
+
+
 .post-header {
   margin-bottom: 0;
 }
@@ -180,13 +206,18 @@ section {
 
 .main-body {
   font-family: Georgia, serif;
-  font-size: 1.9rem;
+  font-size: 1.8rem;
 }
+
 
 .post {
   font-family: Georgia, serif;
   font-size: 1.9rem;
   max-width: 800px;
+}
+
+.post h2, .post h3, .post h4 {
+  margin-top: 5rem;
 }
 
 .heading-anchor {
