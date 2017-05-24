@@ -73,22 +73,31 @@ projects:
 open_source:
   - url: https://github.com/gabrielflorit/blockup
     title: blockup
+    description: A command-line tool for creating and publishing blocks. Created by Gabriel Florit.
   - url: http://peterbeshai.com/vis/d3-interpolate-path/
     title: d3-interpolate-path
+    description: Interpolates &lt;path&gt; d attribute smoothly when A and B have different number of points.
   - url: http://peterbeshai.com/vis/d3-line-chunked/
     title: d3-line-chunked
+    description: Create lines that indicate where data is missing with gaps or differently styled line segments.
   - url: http://peterbeshai.com/vis/d3-scale-interactive/
     title: d3-scale-interactive
+    description: An interactive UI for editing d3 v4 scales in your browser.
   - url: https://github.com/pbeshai/react-auto-width/
     title: react-auto-width
+    description: Populates a width prop of a React component to its parent's width.
   - url: https://github.com/pbeshai/react-computed-props/
     title: react-computed-props
+    description: A higher-order component for React to add derived props for better performance.
   - url: http://peterbeshai.com/react-taco-table/
     title: react-taco-table
+    description: An extensible table component for React that is driven by column configuration.
   - url: http://peterbeshai.com/react-url-query/
     title: react-url-query
+    description: A library for managing state through query parameters in the URL in React.
   - url: https://github.com/pbeshai/vis-utils/
     title: vis-utils
+    description: A collection of utility functions for helping with data visualization.
 blog:
   - url: https://bocoup.com/blog/smoothly-animate-thousands-of-points-with-html5-canvas-and-d3
     title: Smoothly animate thousands of points with HTML5 Canvas and D3
@@ -137,11 +146,15 @@ blog:
 <section>
   <h3 class="list-header">Open Source</h3>
   <ul class="list-unstyled posts">
-    {% for post in site.categories.open_source %}
-    <li><a class="post-item-title" href="{{ post.url }}">{{ post.title }}</a></li>
-    {% endfor %}
     {% for post in page.open_source %}
-    <li><a class="post-item-title" href="{{ post.url }}">{{ post.title }}</a></li>
+    <li>
+      <a class="post-item-title" href="{{ post.url }}">{{ post.title }}</a>
+      <div class="post-item-details">
+        <p class="post-item-description">
+          {{ post.description }}
+        </p>
+      </div>
+    </li>
     {% endfor %}
   </ul>
 </section>
@@ -149,9 +162,6 @@ blog:
 <section>
   <h3 class="list-header">Projects</h3>
   <ul class="list-unstyled posts">
-    {% for post in site.categories.projects %}
-    <li><a class="post-item-title" href="{{ post.url }}">{{ post.title }}</a></li>
-    {% endfor %}
     {% for post in page.projects %}
     <li>
       <a class="post-item-title" href="{{ post.url }}">{{ post.title }}</a>
@@ -169,9 +179,6 @@ blog:
 <section>
   <h3 class="list-header">Experiments</h3>
   <ul class="list-unstyled posts">
-    {% for post in site.categories.experiments %}
-    <li><a class="post-item-title" href="{{ post.url }}">{{ post.title }}</a></li>
-    {% endfor %}
     {% for post in page.experiments %}
     <li>
       <a class="post-item-title" href="{{ post.url }}">{{ post.title }}</a>
