@@ -138,8 +138,10 @@ blog:
   <ul class="list-unstyled posts posts-with-banner">
     {% for post in sortedBlog %}
     <li>
-      {% if post.banner %}<img src="{{ post.banner }}" class="post-item-image" />{% endif %}
-      <a class="post-item-title" href="{{ post.url }}">{{ post.title }}</a>
+      <a class="post-item-title" href="{{ post.url }}">
+        {% if post.banner %}<img src="{{ post.banner }}" class="post-item-image" />{% endif %}
+        {{ post.title }}
+      </a>
       <div class="post-item-details">
         <span class="post-item-date">{{ post.date | date: '%B %-d, %Y' }}</span>
         <span class="post-item-host">{{ post.host }}</span>
