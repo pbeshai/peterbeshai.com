@@ -187,7 +187,7 @@ section {
   border-bottom: 1px solid rgba(0, 0, 0, 0.07);
 }
 .post-item-title {
-  margin-right: 0.5em;
+  display: block;
 }
 
 .post-item-details {
