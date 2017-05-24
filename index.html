@@ -110,26 +110,31 @@ blog:
     date: 2017-03-16 00:00:00 +0000
     host: bocoup.com
     banner: images/posts/canvas1000.jpg
+    content: Sometimes in life, you’ve just gotta move thousands of points around on the screen. For hundreds of points, this can be accomplished with D3 through d3-transition on SVG nodes, but this typically becomes too slow when you need to animate more than a thousand points. So how do you do it?
   - url: https://bocoup.com/weblog/showing-missing-data-in-line-charts
     title:  Showing Missing Data in Line Charts
     date: 2016-09-20 00:00:00 +0000
     host: bocoup.com
     banner: images/posts/missing_data_line.png
+    content: While working on visualizing the results of internet speed test data for Measurement Lab, it became clear that there wouldn’t always be data for every geographic location on every single day. We might go several days without meeting a minimum threshold of tests, meaning there would be gaps in our data.
   - url: https://bocoup.com/weblog/improving-d3-path-animation
     title:  Improving D3 Path Animation
     date: 2016-09-14 00:00:00 +0000
     host: bocoup.com
     banner: images/posts/path_animation.png
+    content: D3 provides us with many of the basic building blocks needed to make charts in browsers while also making it extremely easy to animate them. One of the most common charts created with D3 is a line chart, often consisting of a series of SVG <path> elements to visualize the data.
   - url: https://medium.com/@pbesh/react-and-vega-an-alternative-visualization-example-cd76e07dc1cd#.d3cx0asd0
     title:  "React and Vega: An Alternative Visualization Example"
     date: 2016-03-01 00:00:00 +0000
     host: medium.com
     banner: images/posts/react_vega_blog_banner.jpg
+    content: In this post, I’ll go over an example of how to render a couple of charts by creating React components that encapsulate Vega visualizations. The final code has a line chart and a radial heatmap that are synchronized so that when you hover over one, the same item in each of the charts is highlighted.
   - url: https://medium.com/@pbesh/linked-highlighting-with-react-d3-js-and-reflux-16e9c0b2210b
     title:  Linked Highlighting with React, D3.js and Reflux
     date: 2015-05-04 00:00:00 +0000
     host: medium.com
     banner: images/posts/react_d3_blog_banner.jpg
+    content: One of the best interaction techniques for data vis is to have linked highlighting between related visualizations. In this post, I share a method for implementing linked highlighting using React, D3.js and Reflux.
 ---
 <section>
   {% assign postsArray = "" | split: "" %}
@@ -151,6 +156,10 @@ blog:
       <div class="post-item-details">
         <span class="post-item-date">{{ post.date | date: '%B %-d, %Y' }}</span>
         <span class="post-item-host">{{ post.host }}</span>
+        <p class="post-item-description">
+          {{ post.content | strip_html | truncatewords:45}}
+          <a href="{{ post.url }}">Read More</a>
+        </p>
       </div>
     </li>
     {% endfor %}

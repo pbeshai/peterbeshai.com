@@ -195,13 +195,14 @@ section {
   color: #bbb;
   font-size: 1.6rem;
   white-space: nowrap;
-  margin-top: 0.25em;
+  margin-top: 0.3em;
 }
 
 .post-item-description {
   white-space: normal;
   line-height: 1.4;
   color: #888;
+  margin-top: 0.3em;
 }
 
 .post-item-date {
