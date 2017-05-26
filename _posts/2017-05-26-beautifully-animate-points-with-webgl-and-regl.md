@@ -166,7 +166,7 @@ Ok, with all that aside, let's dive into the shaders.
 
 To specify the fragment shader, we write it as a multi-line string. We'll keep this one as simple as we can and just set the pixel color to whatever the vertex shader passed in.
 
-```c
+```clike
 // set the precision of floating point numbers
 precision highp float;
 
@@ -187,7 +187,7 @@ Note that `varying` basically means the vertex shader populates the value of thi
 
 The vertex shader is a bit more complex, but the basics are shown below:
 
-```c
+```clike
 // per vertex attributes
 attribute vec2 position;
 attribute vec3 color;
@@ -218,7 +218,7 @@ First, we update `gl_PointSize`, a special value that determines the size points
 
 Now if you'll recall, the points in WebGL space are not the same as in normal screen pixel space-- they range from (-1, -1) to (1, 1). Since we laid out our point positions in pixel space, we'll need to normalize them in our shader. Here's the full code including normalization:
 
-```c
+```clike
 // per vertex attributes
 attribute vec2 position;
 attribute vec3 color;
@@ -436,7 +436,7 @@ We've reached the point where we have to dive back into our shader to update it 
 
 Since we have `elapsed` and `duration` being passed as uniforms, we can compute how far through the animation we are by simply dividing them: `elapsed / duration` (and maxing out at 1). We can then use the amazingly useful [mix(a, b)](https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/mix.xhtml) function which linear interpolates any two values -- even vectors -- to figure out our current positions and colors. Let's see how this shakes out inside our main() function:
 
-```c
+```clike
 // number between 0 and 1 indicating how far through the
 // animation this vertex is.
 float t = min(1.0, elapsed / duration);
@@ -453,7 +453,7 @@ Besides declaring the new variables at the top of the shader, those are the only
 
 Sadly, if you looked at the animation at this point, it would be a bit boring since we left all the magic of easing out. There's this amazing module system of pre-built shader helpers called [glslify](https://github.com/stackgl/glslify) that contains [a bunch of easing functions](https://github.com/stackgl/glsl-easings) you can drop into your code, but for now we'll write our own. Let's take the cubic-in-out easing code from [d3-ease](https://github.com/d3/d3-ease) and use it to create a new function in our shader:
 
-```c
+```clike
 // helper function to handle cubic easing (copied from d3)
 // note there are premade ease functions available via glslify.
 float easeCubicInOut(float t) {
@@ -472,7 +472,7 @@ float easeCubicInOut(float t) {
 
 All we have to do now is apply that function to our `t` value and we'll have some smoothly eased animation taking place and we're done! Here's the full animation vertex shader:
 
-```c
+```clike
 // per vertex attributes
 attribute vec2 positionStart;
 attribute vec2 positionEnd;
