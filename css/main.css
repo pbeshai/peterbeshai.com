@@ -284,10 +284,22 @@ pre[class*="language-"] {
 }
 
 :not(pre) > code[class*="language-"],
-pre[class*="language-"] {
+pre[class*="language-"],
+pre.highlight {
   background: #f6f6f6;
   border: 0;
   border-left: 6px solid #eee;
+}
+
+pre.highlight {
+  padding: 1em;
+  margin: 0;
+  margin-bottom: 2.5rem;
+  overflow: auto;
+}
+
+pre.highlight > code {
+  background: none;
 }
 
 pre > code {
