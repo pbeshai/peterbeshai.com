@@ -531,8 +531,7 @@ void main() {
 
   // otherwise we are animating, so use cubic easing
   } else {
-    // t = easeCubicInOut(elapsed / duration);
-    t = min(1.0, elapsed / duration);
+    t = easeCubicInOut(elapsed / duration);
   }
 
   // interpolate position
