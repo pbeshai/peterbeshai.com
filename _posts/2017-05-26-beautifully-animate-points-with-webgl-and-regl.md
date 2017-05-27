@@ -80,7 +80,7 @@ Ok, so we have some points. Notice anything a bit strange? The colors are arrays
 
 Colors in WebGL are formatted as arrays of length four (red, green, blue, alpha) with values ranging from 0 to 1 instead of their typical string format used in HTML and CSS. The code above produces points with colors ranging from rgb(0, 0, 0) to rgb(0, 255, 0). Since we're not dealing with alpha in this example, I've excluded the fourth value from the array (we'll fill it in as `1` later).
 
-The x and y values that we specified will range from 0 to `width` and 0 to `height`, also known as pixel space. This coordinate system is what we're used to when working with normal canvas or svg, but in WebGL everything lives in normalized device coordinates, which is a fancy way of saying the top left corner is at (-1, -1) and the bottom right corner is at (1, 1). We'll keep the `width` and `height` variables around so we can scale our x and y positions appropriately in our shader.
+The x and y values that we specified will range from 0 to `width` and 0 to `height`, also known as pixel space. This coordinate system is what we're used to when working with normal canvas or svg, but in WebGL everything lives in normalized device coordinates, which is a fancy way of saying the top left corner is at (-1, 1) and the bottom right corner is at (1, -1). We'll keep the `width` and `height` variables around so we can scale our x and y positions appropriately in our shader.
 
 ### The regl Draw Loop
 
@@ -216,7 +216,7 @@ void main() {
 
 First, we update `gl_PointSize`, a special value that determines the size points are rendered on screen based on our property `pointWidth`. Then we save the attribute `color` into the varying `fragColor` so that the fragment shader can read its value since it does not have access to attributes. Finally, we update `gl_Position` to indicate where the vertex is positioned.
 
-Now if you'll recall, the points in WebGL space are not the same as in normal screen pixel space-- they range from (-1, -1) to (1, 1). Since we laid out our point positions in pixel space, we'll need to normalize them in our shader. Here's the full code including normalization:
+Now if you'll recall, the points in WebGL space are not the same as in normal screen pixel space-- they range from (-1, 1) to (1, -1). Since we laid out our point positions in pixel space, we'll need to normalize them in our shader. Here's the full code including normalization:
 
 ```clike
 // per vertex attributes
@@ -233,7 +233,7 @@ uniform float stageHeight;
 
 // helper function to transform from pixel space to normalized
 // device coordinates (NDC). In NDC (0,0) is the middle,
-// (-1, -1) is the top left and (1, 1) is the bottom right.
+// (-1, 1) is the top left and (1, -1) is the bottom right.
 vec2 normalizeCoords(vec2 position) {
   // read in the positions into x and y vars
   float x = position[0];
@@ -490,8 +490,8 @@ uniform float elapsed;
 uniform float duration;
 
 // helper function to transform from pixel space to normalized
-// device coordinates (NDC). In NDC (0,0) is middle, (-1, -1)
-// is the top left and (1, 1) is the bottom right.
+// device coordinates (NDC). In NDC (0,0) is middle, (-1, 1)
+// is the top left and (1, -1) is the bottom right.
 vec2 normalizeCoords(vec2 position) {
   // read in the positions into x and y vars
   float x = position[0];
