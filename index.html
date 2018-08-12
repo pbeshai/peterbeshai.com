@@ -59,7 +59,7 @@ projects:
     description: A comprehensive data pipeline, API, and visualization system for over 200 million internet speed tests across the world.
     year: 2016
     company: Bocoup
-    banner: images/projects/mlab_banner.png
+    banner: images/projects/mlab_banner.jpg
   - url: http://www.cancerbrowser.org/
     title: Harvard Medical School Breast Cancer Browser
     description: An online tool for exploring and visualizing the results of a multitude of different experiments focused on how various breast cancer cell lines respond to a number of different perturbagens.
@@ -117,7 +117,7 @@ blog:
     title: Smoothly animate thousands of points with HTML5 Canvas and D3
     date: 2017-03-16 00:00:00 +0000
     host: bocoup.com
-    banner: images/posts/canvas1000.jpg
+    banner: images/posts/canvas1000_wide.jpg
     content: Sometimes in life, you’ve just gotta move thousands of points around on the screen. For hundreds of points, this can be accomplished with D3 through d3-transition on SVG nodes, but this typically becomes too slow when you need to animate more than a thousand points. So how do you do it?
   - url: https://bocoup.com/weblog/showing-missing-data-in-line-charts
     title:  Showing Missing Data in Line Charts
@@ -135,13 +135,13 @@ blog:
     title:  "React and Vega: An Alternative Visualization Example"
     date: 2016-03-01 00:00:00 +0000
     host: medium.com
-    banner: images/posts/react_vega_blog_banner.jpg
+    banner: images/posts/react_vega.png
     content: In this post, I’ll go over an example of how to render a couple of charts by creating React components that encapsulate Vega visualizations. The final code has a line chart and a radial heatmap that are synchronized so that when you hover over one, the same item in each of the charts is highlighted.
   - url: https://medium.com/@pbesh/linked-highlighting-with-react-d3-js-and-reflux-16e9c0b2210b
     title:  Linked Highlighting with React, D3.js and Reflux
     date: 2015-05-04 00:00:00 +0000
     host: medium.com
-    banner: images/posts/react_d3_blog_banner.jpg
+    banner: images/posts/react_d3.png
     content: One of the best interaction techniques for data vis is to have linked highlighting between related visualizations. In this post, I share a method for implementing linked highlighting using React, D3.js and Reflux.
 ---
 <section id="about">
@@ -157,11 +157,13 @@ blog:
         I enjoy making highly usable interactive tools for the web.
       </p>
     </div>
-  <img class="profile-image" src="/images/profile.jpg" alt="Me"> 
+  <img class="profile-image" src="{{ page.img }}" alt="Me"> 
 </div>
 </section>
 
-<section id="blog">
+<section>
+  <a name="blog" class="section-anchor"></a>  
+
   {% assign postsArray = "" | split: "" %}
   {% for post in site.categories.blog %}
     {% assign postsArray = postsArray | push: post %}
@@ -171,75 +173,94 @@ blog:
   {% endfor %}
   {% assign sortedBlog = postsArray | sort: "date" | reverse %}
   <h3 class="section-header">Blog</h3>
+
   <div class="posts">
     {% for post in sortedBlog %}
     <div class="post-item post-big-text">
-      <img src="{{ post.banner }}" class="post-item-image" />
+      <div style="background-image: url({{ post.banner }})" class="post-item-image" /></div>
       <div class="post-item-details">
-        <a class="post-item-title" href="{{ post.url }}">
-          {{ post.title }}
-        </a>
-        <span class="post-item-date">{{ post.date | date: '%B %-d, %Y' }}</span>
-        <span class="post-item-host">{{ post.host }}</span>
-        <p class="post-item-description">
-          {{ post.content | strip_html | truncatewords:45}}
-          <a href="{{ post.url }}">Read More</a>
-        </p>
+        <div class="post-item-details-inner">
+          <a class="post-item-title" href="{{ post.url }}">
+            {{ post.title }}
+          </a>
+          <span class="post-item-date">{{ post.date | date: '%B %-d, %Y' }}</span>
+          <span class="post-item-host">{{ post.host }}</span>
+          <p class="post-item-description">
+            {{ post.content | strip_html | truncatewords:25}}
+          </p>
+        </div>
+        <div class="post-item-cta">
+          <a class="outline-btn" href="{{ post.url }}">View Post</a>
+        </div>
       </div>
     </div>
     {% endfor %}
   </ul>
 </section>
 
-<section id="projects">
+<section>
+  <a name="projects" class="section-anchor"></a>  
   <h3 class="section-header">Projects</h3>
   <div class="posts">
     {% for post in page.projects %}
     <div class="post-item post-big-image">
-      <img src="{{ post.banner }}" class="post-item-image" />
+      <div style="background-image: url({{ post.banner }})" class="post-item-image" /></div>
       <div class="post-item-details">
-          <a class="post-item-title" href="{{ post.url }}">
+        <div class="post-item-details-inner">
+        <a class="post-item-title" href="{{ post.url }}">
           {{ post.title }}
         </a>
+        <span class="post-item-date">
+          {{ post.year }}{% if post.company %} at {{ post.company }}{% endif %}
+        </span>
         <p class="post-item-description">
           {{ post.description }}
-          <span class="post-item-date">
-            Made in {{ post.year }}{% if post.company %} at {{ post.company }}{% endif %}.
-          </span>
+          
         </p>
+        </div>
+        <div class="post-item-cta">
+          <a class="outline-btn post-cta" href="{{ post.url }}">View Project</a>
+        </div>
       </div>
     </div>
     {% endfor %}
   </ul>
 </section>
 
-<section id="experiments">
+<section>
+  <a name="experiments" class="section-anchor"></a>  
   <h3 class="section-header">Experiments</h3>
-  <div class="posts">
+  <div class="posts posts-small">
     {% for post in page.experiments %}
     <div class="post-item post-small">
-      <a class="post-item-title" href="{{ post.url }}">{{ post.title }}</a>
+      <div style="background-image: url(/images/300.png)" class="post-item-image" /></div>      
       <div class="post-item-details">
-        <p class="post-item-description">
-          {{ post.description }}
-          <span class="post-item-date">Made in {{ post.year }}.</span>
-        </p>
+        <div class="post-item-details-inner">
+          <a class="post-item-title" href="{{ post.url }}">{{ post.title }}</a>
+          <p class="post-item-description">
+            {{ post.description }}
+            <span class="post-item-date">Made in {{ post.year }}.</span>
+          </p>
+        </div>
       </div>
     </div>
     {% endfor %}
   </ul>
 </section>
 
-<section id="open-source">
+<section>
+  <a name="open-source" class="section-anchor"></a>  
   <h3 class="section-header">Open Source</h3>
-  <div class="posts post-small-text-only">
+  <div class="posts posts-small text-only">
     {% for post in page.open_source %}
-    <div class="post-item">
-      <a class="post-item-title" href="{{ post.url }}">{{ post.title }}</a>
+    <div class="post-item post-small-text-only">
       <div class="post-item-details">
-        <p class="post-item-description">
-          {{ post.description }}
-        </p>
+        <div class="post-item-details-inner">
+          <a class="post-item-title" href="{{ post.url }}">{{ post.title }}</a>
+          <p class="post-item-description">
+            {{ post.description }}
+          </p>
+        </div>
       </div>
     </div>
     {% endfor %}
