@@ -23,9 +23,6 @@
     <meta name="twitter:image:src" content="{{ page.img | absolute_path }}">
     {% endif %}
 
-    <link rel="stylesheet" href="/css/normalize.css" type="text/css">
-    <link rel="stylesheet" href="/css/skeleton.css" type="text/css">
-    <link rel="stylesheet" href="/css/prism.css" type="text/css">
     <link rel='stylesheet' href='/css/main.css'/>
     {% if page.css %}
     <link rel="stylesheet" href="/css/pages/{{ page.css }}">
@@ -44,34 +41,26 @@
     <meta name="theme-color" content="#ffffff">
   </head>
   <body>
-    <header class="main-header">
-      <div class="container">
-        <div class="main-header-inner">
-          <h1><a href="/">Peter Beshai</a></h1>
-          <h2>
-            <strong>Design Technologist</strong> at
-            <strong><a href="https://www.cortico.ai/">Cortico</a></strong> in
-            <strong>Cambridge, MA</strong>.
-          </h2>
-          <p class="short-desc">
-            I enjoy making highly usable interactive tools for the web.
-          </p>
-        </div>
+    <nav class="main-nav">
+      <h1><a href="/">Peter Beshai</a></h1>
+      <div class="nav-links">
+        <a href="/#blog">Blog</a>
+        <a href="/#projects">Projects</a>
+        <a href="/#experiments">Experiments</a>
+        <a href="/#open-source">Open Source</a>
       </div>
-    </header>
-    <div class="container main-body">
-      {{ content }}
-    </div>
+    </nav>
+    <main class="main-body">
+      <div class="container">
+        {{ content }}
+      </div>
+    </main>
     <footer>
-      <div class="container">
-        <div class="footer-main-inner">
-          <!-- icons from https://dribbble.com/shots/1427054-Flat-Minimalistic-Social-Icons -->
-          <a href='https://twitter.com/pbesh'><img src='/images/twitter.png' class='social-logo'></a>
-          <div class='em-container'><img src='/images/em.png' class='social-logo'><div>peter.beshai &bull; g<img class='m' src='/images/gm.png'>ail</div></div>
-          <a href='https://www.linkedin.com/in/pbeshai'><img src='/images/linkedin.png' class='social-logo'></a>
-          <a href='https://github.com/pbeshai'><img src='/images/github.png' class='social-logo'></a>
-        </div>
-      </div>
+      <!-- icons from https://dribbble.com/shots/1427054-Flat-Minimalistic-Social-Icons -->
+      <a href='https://twitter.com/pbesh'><img src='/images/twitter.png' class='social-logo'></a>
+      <a href='mailto:peter.beshai@gmail.com'><img src='/images/email.png' class='social-logo'></a>
+      <a href='https://www.linkedin.com/in/pbeshai'><img src='/images/linkedin.png' class='social-logo'></a>
+      <a href='https://github.com/pbeshai'><img src='/images/github.png' class='social-logo'></a>
     </footer>
     {% if page.js %}
     <script src="/js/pages/{{ page.js }}" type="text/javascript" charset="utf-8"></script>

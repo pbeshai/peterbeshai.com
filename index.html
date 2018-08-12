@@ -144,7 +144,24 @@ blog:
     banner: images/posts/react_d3_blog_banner.jpg
     content: One of the best interaction techniques for data vis is to have linked highlighting between related visualizations. In this post, I share a method for implementing linked highlighting using React, D3.js and Reflux.
 ---
-<section>
+<section id="about">
+  <div class="about-box">
+    <div class="about-description">
+      <p>Hi!</p>
+      <p>I'm currently a 
+        <strong>Design Technologist</strong> and <strong>Product Lead</strong> at
+        <strong><a href="https://www.cortico.ai/">Cortico</a></strong> in
+        <strong>Cambridge, MA</strong>.
+      </p>
+      <p class="short-desc">
+        I enjoy making highly usable interactive tools for the web.
+      </p>
+    </div>
+  <img class="profile-image" src="/images/profile.jpg" alt="Me"> 
+</div>
+</section>
+
+<section id="blog">
   {% assign postsArray = "" | split: "" %}
   {% for post in site.categories.blog %}
     {% assign postsArray = postsArray | push: post %}
@@ -153,15 +170,15 @@ blog:
     {% assign postsArray = postsArray | push: post %}
   {% endfor %}
   {% assign sortedBlog = postsArray | sort: "date" | reverse %}
-  <h3 class="list-header">Blog</h3>
-  <ul class="list-unstyled posts posts-with-banner">
+  <h3 class="section-header">Blog</h3>
+  <div class="posts">
     {% for post in sortedBlog %}
-    <li>
-      <a class="post-item-title" href="{{ post.url }}">
-        {% if post.banner %}<img src="{{ post.banner }}" class="post-item-image" />{% endif %}
-        {{ post.title }}
-      </a>
+    <div class="post-item post-big-text">
+      <img src="{{ post.banner }}" class="post-item-image" />
       <div class="post-item-details">
+        <a class="post-item-title" href="{{ post.url }}">
+          {{ post.title }}
+        </a>
         <span class="post-item-date">{{ post.date | date: '%B %-d, %Y' }}</span>
         <span class="post-item-host">{{ post.host }}</span>
         <p class="post-item-description">
@@ -169,21 +186,21 @@ blog:
           <a href="{{ post.url }}">Read More</a>
         </p>
       </div>
-    </li>
+    </div>
     {% endfor %}
   </ul>
 </section>
 
-<section>
-  <h3 class="list-header">Projects</h3>
-  <ul class="list-unstyled posts posts-with-banner">
+<section id="projects">
+  <h3 class="section-header">Projects</h3>
+  <div class="posts">
     {% for post in page.projects %}
-    <li>
-      <a class="post-item-title" href="{{ post.url }}">
-        {% if post.banner %}<img src="{{ post.banner }}" class="post-item-image" />{% endif %}
-        {{ post.title }}
-      </a>
+    <div class="post-item post-big-image">
+      <img src="{{ post.banner }}" class="post-item-image" />
       <div class="post-item-details">
+          <a class="post-item-title" href="{{ post.url }}">
+          {{ post.title }}
+        </a>
         <p class="post-item-description">
           {{ post.description }}
           <span class="post-item-date">
@@ -191,16 +208,16 @@ blog:
           </span>
         </p>
       </div>
-    </li>
+    </div>
     {% endfor %}
   </ul>
 </section>
 
-<section>
-  <h3 class="list-header">Experiments</h3>
-  <ul class="list-unstyled posts">
+<section id="experiments">
+  <h3 class="section-header">Experiments</h3>
+  <div class="posts">
     {% for post in page.experiments %}
-    <li>
+    <div class="post-item post-small">
       <a class="post-item-title" href="{{ post.url }}">{{ post.title }}</a>
       <div class="post-item-details">
         <p class="post-item-description">
@@ -208,23 +225,23 @@ blog:
           <span class="post-item-date">Made in {{ post.year }}.</span>
         </p>
       </div>
-    </li>
+    </div>
     {% endfor %}
   </ul>
 </section>
 
-<section>
-  <h3 class="list-header">Open Source</h3>
-  <ul class="list-unstyled posts">
+<section id="open-source">
+  <h3 class="section-header">Open Source</h3>
+  <div class="posts post-small-text-only">
     {% for post in page.open_source %}
-    <li>
+    <div class="post-item">
       <a class="post-item-title" href="{{ post.url }}">{{ post.title }}</a>
       <div class="post-item-details">
         <p class="post-item-description">
           {{ post.description }}
         </p>
       </div>
-    </li>
+    </div>
     {% endfor %}
   </ul>
 </section>
