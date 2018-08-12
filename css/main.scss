@@ -198,6 +198,7 @@ section {
   grid-template-columns: 3fr 2fr;
   grid-template-rows: 360px;
   color: #333;
+  border: 1px solid #000;
   @include shadow();
 
   img {
@@ -289,4 +290,67 @@ section {
   &:hover {
     opacity: 1;
   }
+}
+
+
+
+.post {
+  font-family: Georgia, serif;
+  font-size: 1.8rem;
+  max-width: 800px;
+}
+
+.post h2, .post h3, .post h4 {
+  margin-top: 5rem;
+}
+
+.heading-anchor {
+  color: #ccc;
+  font-weight: 300;
+  padding-right: 0;
+  margin-left: -30px;
+  display: inline-block;
+  width: 30px;
+  opacity: 0;
+  transition: .2s opacity;
+}
+
+.heading-anchor-container:hover .heading-anchor,
+.heading-anchor:hover {
+  text-decoration: none;
+  opacity: 1;
+}
+
+pre, code, kbd, samp,
+code[class*="language-"],
+pre[class*="language-"] {
+  font-family: Menlo, Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+}
+pre[class*="language-"] {
+  margin: 0;
+  margin-bottom: 2.5rem;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"],
+pre.highlight {
+  background: #f6f6f6;
+  border: 0;
+  border-left: 6px solid #eee;
+}
+
+pre.highlight {
+  padding: 1em;
+  margin: 0;
+  margin-bottom: 2.5rem;
+  overflow: auto;
+}
+
+pre.highlight > code {
+  background: none;
+}
+
+pre > code {
+  padding: 0;
+  border: 0;
 }
