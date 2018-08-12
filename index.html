@@ -10,46 +10,57 @@ experiments:
     title: Exploring Web-based Map Techniques
     description: An exploration of various ways of working with geo data on the web. Includes d3-geo, canvas, and Leaflet.
     year: 2017
+    banner: /images/experiments/geo-explore-large.png
   - url: https://bl.ocks.org/pbeshai/98c08d22c922688acff852d35b70e4d2
     title: Particles Flowing with WebGL and regl
     description: Demonstrates how to write to framebuffers with shaders in regl, enabling stateful updates of particles.
     year: 2017
+    banner: /images/experiments/particle-flow-large.png
   - url: https://bl.ocks.org/pbeshai/51d05995c5410a52116f89738144c622
     title: Animate 100,000 points with regl
     description: Shows 100,000 points moving between various layouts smoothly thanks to WebGL. Uses regl and d3.
     year: 2017
+    banner: /images/experiments/regl-100000-large.png
   - url: https://bl.ocks.org/pbeshai/da904ef5fd7f451e04e3b04568fef270
     title: Line Circle Illusion
     description: Circles moving in straight lines producing an illusion of a larger circle rotating. Uses canvas and d3.
     year: 2017
+    banner: /images/experiments/line-circle.png
   - url: https://bl.ocks.org/pbeshai/72c446033a98f99ce1e1371c6eee9644
     title: Compute points and angles along a bezier curve
     description: Given the end points and control points along a bezier curve, get any point and any angle along the curve. Uses d3.
     year: 2017
+    banner: /images/experiments/angles-bezier.png
   - url: https://bl.ocks.org/pbeshai/65420c8d722cdbb0600b276c3adcc6e8
     title: Animate thousands of points with canvas and D3
     description: Shows 7,000 points animating smoothly between different layouts. Uses canvas and d3.
     year: 2017
+    banner: /images/experiments/canvas-7000.png
   - url: /vis/mandala/
     title: Mandala Generator
     description: Playing with svg's &lt;use&gt; tag to randomly generate mandalas. Uses svg and d3.
     year: 2016
+    banner: /images/experiments/mandala.png
   - url: /vis/ovc/particles
     title: OpenVis Conf 2017 Moving Particles
     description: Animating particles moving across the background of a page with lines connecting them when they're close to one another. Uses canvas and d3.
     year: 2016
+    banner: /images/experiments/ovc-particles.png
   - url: /vis/canvas-particle-orb
     title: Canvas Particle Orb
     description: Animate 20,000 rectangles changing position and color. Uses canvas and d3.
     year: 2016
+    banner: /images/experiments/canvas-orb.png
   - url: https://bl.ocks.org/pbeshai/484d6bf04edcdecfc3731e00c062f47e
     title: Jagged Lines
     description: Draws a jagged line between any two points with configurable parameters. Uses svg and d3.
     year: 2016
+    banner: /images/experiments/jagged-line.png
   - url: https://bl.ocks.org/pbeshai/ffd0f9d84b4e8df27db2
     title: Shooting Signatures
     description: An attempt at creating an at-a-glance visual summary of an NBA player's shooting performance. Uses svg and d3.
     year: 2015
+    banner: /images/experiments/shooting-signature.png
 
 
 
@@ -233,13 +244,13 @@ blog:
   <div class="posts posts-small">
     {% for post in page.experiments %}
     <div class="post-item post-small">
-      <div style="background-image: url(/images/300.png)" class="post-item-image" /></div>      
+      <div style="background-image: url({{ post.banner }})" class="post-item-image" /></div>      
       <div class="post-item-details">
         <div class="post-item-details-inner">
           <a class="post-item-title" href="{{ post.url }}">{{ post.title }}</a>
+          <span class="post-item-date">{{ post.year }}</span>
           <p class="post-item-description">
             {{ post.description }}
-            <span class="post-item-date">Made in {{ post.year }}.</span>
           </p>
         </div>
       </div>

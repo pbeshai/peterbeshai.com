@@ -55,12 +55,16 @@
         {{ content }}
       </div>
     </main>
-    <footer>
-      <!-- icons from https://dribbble.com/shots/1427054-Flat-Minimalistic-Social-Icons -->
-      <a href='https://twitter.com/pbesh'><img src='/images/twitter.png' class='social-logo'></a>
-      <a href='mailto:peter.beshai@gmail.com'><img src='/images/email.png' class='social-logo'></a>
-      <a href='https://www.linkedin.com/in/pbeshai'><img src='/images/linkedin.png' class='social-logo'></a>
-      <a href='https://github.com/pbeshai'><img src='/images/github.png' class='social-logo'></a>
+    <footer class="main-footer">
+      <div class="email">
+          <a href='mailto:peter.beshai@gmail.com'>peter.beshai@gmail.com</a>
+      </div>
+      <div class="social">
+        <!-- icons from https://dribbble.com/shots/1427054-Flat-Minimalistic-Social-Icons -->
+        <a href='https://twitter.com/pbesh' target="_blank" rel="noopener noreferrer"><img src='/images/twitter.png' class='social-logo'></a>
+        <a href='https://www.linkedin.com/in/pbeshai' target="_blank" rel="noopener noreferrer"><img src='/images/linkedin.png' class='social-logo'></a>
+        <a href='https://github.com/pbeshai' target="_blank" rel="noopener noreferrer"><img src='/images/github.png' class='social-logo'></a>
+      </div>
     </footer>
     {% if page.js %}
     <script src="/js/pages/{{ page.js }}" type="text/javascript" charset="utf-8"></script>
