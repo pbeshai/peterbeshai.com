@@ -101,6 +101,34 @@ p {
   }
 }
 
+@media all and (max-width: 700px) { 
+  .main-nav {
+    position: static;
+    grid-template-columns: 1fr;
+    grid-template-rows: 60px auto;
+    height: auto;
+    grid-gap: 10px;
+    
+    .nav-links {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 30px 30px;
+      justify-self: start;
+      margin-bottom: 10px;
+    }
+  }
+  
+  
+
+   // undo fixed nav height
+   main {
+    margin-top: $section-spacing;
+  }
+  .section-anchor {
+    top: 0;
+  }
+}
+
 main {
   margin-top: $nav-height + $section-spacing;
   padding: 0 $spacer;
