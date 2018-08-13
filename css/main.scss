@@ -88,18 +88,22 @@ p {
     justify-self: end;
     display: flex;
     a {
-      margin-left: 40px;
+      margin-right: 40px;
       text-transform: uppercase;
       letter-spacing: 1px;
       font-size: 0.85em;
       font-weight: 600;
+
+      &:last-child {
+        margin-right: 0;
+      }
     }
   }
 }
 
 main {
   margin-top: $nav-height + $section-spacing;
-  
+  padding: 0 $spacer;
 }
 
 section {
@@ -128,7 +132,7 @@ section {
   grid-gap: $spacer;
   background: $nav-background;
   @include shadow();
-  max-width: 740px;
+  max-width: 800px;
   margin: 0 auto;
   align-items: center;
 }
@@ -149,6 +153,7 @@ section {
   display: grid;
   justify-content: space-around;
   margin: 0 auto;
+
 }
 
 .outline-btn {
@@ -171,11 +176,12 @@ section {
 .posts-small {
   $text-height: 250px;
   $image-height: 150px;
+  $min-col-width: 310px;
 
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: $text-height + $image-height;
-  grid-auto-rows: $text-height + $image-height;
+  grid-template-columns: repeat(auto-fill, minmax($min-col-width, 1fr));
+  
+  grid-template-rows: repeat(auto-fill, 1fr);
   grid-column-gap: $post-spacing-small;
   grid-row-gap: $post-spacing-small;
 
@@ -186,8 +192,6 @@ section {
   }
 
   &.text-only {
-    grid-template-rows: $text-height * 0.7;
-    grid-auto-rows: $text-height * 0.7;
   
     .post-item {
       grid-template-columns: auto;
@@ -219,6 +223,28 @@ section {
     grid-template-columns: 3fr 2fr;
     grid-template-rows: 360px;
     margin-bottom: $post-spacing-big-image;
+  }
+
+  &:last-child {
+    margin-bottom: 0 !important;
+  }
+}
+
+@media all and (max-width: 800px) { 
+  .post-item.post-big-text,
+  .post-item.post-big-image {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .post-big-text .post-item-description,
+  .post-big-image .post-item-description {
+    display: none;
+  }
+}
+@media all and (max-width: 660px) {
+  .post-item.post-big-text,
+  .post-item.post-big-image {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -287,11 +313,15 @@ section {
   opacity: 0.7;
 
   &:first-child {
-    margin-left: 0;
+    margin-right: 0;
   }
 
   &:hover {
     opacity: 1;
+
+    &:last-child {
+      margin-right: 0;
+    }
   }
 }
 
