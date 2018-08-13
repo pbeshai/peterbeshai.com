@@ -4,8 +4,10 @@
 // @import "skeleton.css";
 @import "prism.css";
 
-$background-color: hsl(223, 28%, 13%);
-$background-color: hsl(186, 49%, 39%);
+$background-top: #3fdbec; 
+$background-bottom: #195c8c;
+// $background-color: hsl(223, 28%, 13%);
+$background-color: #30AAC7;
 $nav-background: hsl(223, 28%, 13%);
 $link-color: hsl(163, 75%, 47%);
 $light-bg-link-color: $background-color;
@@ -35,7 +37,7 @@ html {
 body {
   font-family: 'Proxima Nova', 'proxima-nova', 'helvetica neue', sans-serif;
   background-color: $background-color;
-  background-image: linear-gradient(180deg, lighten($background-color, 5%) 0%, darken($background-color, 10%) 100%);
+  background-image: linear-gradient(180deg, $background-top, $background-bottom 100%);
   background-attachment: fixed;
   color: #fff;
   -webkit-font-smoothing: antialiased;
