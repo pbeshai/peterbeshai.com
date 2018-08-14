@@ -4,15 +4,15 @@
 // @import "skeleton.css";
 @import "prism.css";
 
-$background-top: #3fdbec; 
-$background-bottom: #195c8c;
+// $background-top: #3fdbec; 
+// $background-bottom: #195c8c;
 // $background-color: hsl(223, 28%, 13%);
-$background-color: #30AAC7;
-$nav-background: hsl(223, 28%, 13%);
-$link-color: hsl(163, 75%, 47%);
-$light-bg-link-color: $background-color;
-$nav-link-hover-color: #9facd0;
-$nav-link-hover-color: $link-color;
+$background-color: #F6FAFC;
+$nav-background: #000;
+$dark-bg-link-color: #328aff;
+$light-bg-link-color: #006eff;
+$link-color: $light-bg-link-color;
+$nav-link-hover-color: $dark-bg-link-color;
 $nav-height: 60px;
 $spacer: 20px;
 $gold: hsl(41, 95%, 67%);
@@ -21,13 +21,13 @@ $post-text-padding: 40px;
 $post-spacing-big-text: 70px;
 $post-spacing-big-image: 70px;
 $post-spacing-small: 20px;
-$shadow-color: darken($background-color, 20%);
+$shadow-color: desaturate(darken($background-color, 15%), 30%);
 $gray-200: hsl(223, 3%, 91%);
 $gray-400: hsl(223, 3%, 61%);
 $gray-600: hsl(223, 3%, 41%);
 
 @mixin shadow() {
-  box-shadow: 5px 5px 20px 0px $shadow-color;
+  box-shadow: 0px 5px 10px 0px $shadow-color;
 }
 
 html {
@@ -37,9 +37,9 @@ html {
 body {
   font-family: 'Proxima Nova', 'proxima-nova', 'helvetica neue', sans-serif;
   background-color: $background-color;
-  background-image: linear-gradient(180deg, $background-top, $background-bottom 100%);
-  background-attachment: fixed;
-  color: #fff;
+  // background-image: linear-gradient(180deg, $background-top, $background-bottom 100%);
+  // background-attachment: fixed;
+  color: #333;
   -webkit-font-smoothing: antialiased;
   position: relative;
   line-height: 1.4;
@@ -235,12 +235,14 @@ section {
 .section-header {
   font-weight: 600;
   text-transform: uppercase;
-  margin: 0 0 10px;
+  margin: 0 0 30px;
   letter-spacing: 2.4px;
   font-size: 1.35em;
-  color: rgba(255, 255, 255, 0.9);
-  text-shadow: 2px 2px 0px $shadow-color;
-  border-bottom: 4px solid rgba(255, 255, 255, 0.2);
+  // color: rgba(255, 255, 255, 0.9);
+  // text-shadow: 2px 2px 0px $shadow-color;
+  // border-bottom: 4px solid rgba(255, 255, 255, 0.2);
+  text-align: center;
+  color: #000;
 }
 
 .about-box {
@@ -252,6 +254,11 @@ section {
   max-width: 800px;
   margin: 0 auto;
   align-items: center;
+  color: #fff;
+  
+  a {
+    color: $dark-bg-link-color;
+  }
 }
 
 @media all and (max-width: 700px) { 
@@ -336,7 +343,7 @@ section {
   background: #fff;
   display: grid;
   grid-template-columns: 3fr 2fr;
-  grid-template-rows: 360px;
+  grid-template-rows: minmax(360px, 1fr);
   color: #333;
   @include shadow();
 
@@ -347,13 +354,14 @@ section {
 
   &.post-big-text {
     grid-template-columns: 2fr 3fr;
-    grid-template-rows: 280px;
+    grid-template-rows: minmax(280px, 1fr);
     margin-bottom: $post-spacing-big-text;
   }
 
   &.post-big-image {
     grid-template-columns: 3fr 2fr;
-    grid-template-rows: 360px;
+    grid-template-rows: minmax(360px, 1fr);
+
     margin-bottom: $post-spacing-big-image;
   }
 
@@ -395,12 +403,13 @@ section {
 }
 
 .post-item-title {
-  font-size: 1.6em;
+  font-size: 1.7em;
   text-decoration: none;
-  color: #333;
+  color: #000;
   display: block;
-  line-height: 1;
+  line-height: 1.1;
   margin-bottom: 4px;
+  font-weight: 600;
 }
 
 .post-item-date, 
@@ -428,10 +437,12 @@ section {
   justify-content: space-between;
   background: $nav-background;
   align-items: center;
+  a {
+    color: $dark-bg-link-color;
+  }
 
   .email {
     // opacity: 0.7;
-
     &:hover {
       opacity: 1;
     }
@@ -500,10 +511,10 @@ section {
 
 h1, h2, h3, h4, h5, h6 {
   font-family:  'Proxima Nova', 'proxima-nova', 'helvetica neue', sans-serif;
-  color: #444;
+  color: #000;
   margin-top: 0;
   margin-bottom: 2rem;
-  font-weight: 200; }
+  font-weight: 600; }
 h1 { font-size: 3.6rem; line-height: 1.25; }
 h2 { font-size: 3.0rem; line-height: 1.3;  }
 h3 { font-size: 2.4rem; line-height: 1.35;  }
@@ -528,6 +539,7 @@ h6 { font-size: 1.6rem; line-height: 1.6;  }
 .post-header {
   margin-bottom: 0;
   line-height: 1;
+  font-weight: 600;
 }
 
 .post-info {
