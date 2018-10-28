@@ -11,7 +11,7 @@
     <meta name="twitter:site" content="@pbesh">
     <meta name="twitter:creator" content="@pbesh">
     <meta name="twitter:title" content="{{ page.title }}">
-    <meta property="og:url" content="https://peterbeshai.com/{{ page.url | absolute_path }}" />
+    <meta property="og:url" content="https://peterbeshai.com{{ page.url | absolute_path }}" />
     <meta property="og:type" content="{{ page.ogtype }}" />
     <meta property="og:title" content="{{ page.title }}" />
     {% if page.description %}
@@ -19,9 +19,8 @@
     <meta property="og:description" content="{{ page.description }}" />
     {% endif %}
     {% if page.img %}
-    <meta property="og:image" content="https://peterbeshai.com/{{ page.img | absolute_path }}" />
-    <meta name="twitter:image:src" content="https://peterbeshai.com/{{ page.img | absolute_path }}">
-    <meta name="twitter:image" content="https://peterbeshai.com/{{ page.img | absolute_path }}">
+    <meta property="og:image" content="https://peterbeshai.com{{ page.img | absolute_path }}" />
+    <meta name="twitter:image" content="https://peterbeshai.com{{ page.img | absolute_path }}">
     {% endif %}
 
     <link rel='stylesheet' href='/css/main.css'/>
