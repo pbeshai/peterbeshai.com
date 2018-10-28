@@ -41,6 +41,7 @@ body {
   // background-attachment: fixed;
   color: #333;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   position: relative;
   line-height: 1.4;
   font-size: 1.6em;
@@ -582,6 +583,10 @@ code[class*="language-"],
 pre[class*="language-"] {
   font-family: Menlo, Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
 }
+code {
+  font-size: 0.9em;
+}
+
 pre[class*="language-"] {
   margin: 0;
   margin-bottom: 2.5rem;
