@@ -1,0 +1,168 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="ie=edge"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><style data-href="/component---src-templates-blog-post-js.1d3c152f5f561507ccdb.css">code[class*=language-],pre[class*=language-]{color:#000;background:none;text-shadow:0 1px #fff;font-family:Consolas,Monaco,Andale Mono,Ubuntu Mono,monospace;font-size:.92em;text-align:left;white-space:pre;word-spacing:normal;word-break:normal;word-wrap:normal;line-height:1.5;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-hyphens:none;-ms-hyphens:none;hyphens:none}code[class*=language-]::-moz-selection,code[class*=language-] ::-moz-selection,pre[class*=language-]::-moz-selection,pre[class*=language-] ::-moz-selection{text-shadow:none;background:#b3d4fc}code[class*=language-]::selection,code[class*=language-] ::selection,pre[class*=language-]::selection,pre[class*=language-] ::selection{text-shadow:none;background:#b3d4fc}@media print{code[class*=language-],pre[class*=language-]{text-shadow:none}}pre[class*=language-]{padding:1em;margin:16px 0 32px;overflow:auto;border-bottom:2px solid #f1f3f5;background:#fbfbfc;border-radius:4px}:not(pre)>code[class*=language-]{padding:.1em;border-radius:.3em;white-space:normal;background:none}.token.cdata,.token.comment,.token.doctype,.token.prolog{color:#708090}.token.punctuation{color:#999}.namespace{opacity:.7}.token.boolean,.token.constant,.token.deleted,.token.number,.token.property,.token.symbol,.token.tag{color:#905}.token.attr-name,.token.builtin,.token.char,.token.inserted,.token.selector,.token.string{color:#690}.language-css .token.string,.style .token.string,.token.entity,.token.operator,.token.url{color:#a67f59;background:hsla(0,0%,100%,.5)}.token.atrule,.token.attr-value,.token.keyword{color:#07a}.token.function{color:#dd4a68}.token.important,.token.regex,.token.variable{color:#e90}.token.bold,.token.important{font-weight:700}.token.italic{font-style:italic}.token.entity{cursor:help}</style><meta name="generator" content="Gatsby 2.0.59"/><title data-react-helmet="true">Creating videos from Processing&#x27;s p5.js with CCapture.js and ffmpeg - Peter Beshai</title><link data-react-helmet="true" href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans:700|Karla:400,400i,700" rel="stylesheet"/><meta data-react-helmet="true" name="description" content="A tutorial on creating videos from Processing&#x27;s javascript library p5.js with the help of CCapture.js and ffmpeg."/><meta data-react-helmet="true" name="twitter:description" content="A tutorial on creating videos from Processing&#x27;s javascript library p5.js with the help of CCapture.js and ffmpeg."/><meta data-react-helmet="true" property="og:description" content="A tutorial on creating videos from Processing&#x27;s javascript library p5.js with the help of CCapture.js and ffmpeg."/><meta data-react-helmet="true" name="keywords" content="data vis, visualization, creative coding, generative art, nba, basketball"/><meta data-react-helmet="true" name="twitter:site" content="@pbesh"/><meta data-react-helmet="true" name="twitter:creator" content="@pbesh"/><meta data-react-helmet="true" property="og:title" content="Creating videos from Processing&#x27;s p5.js with CCapture.js and ffmpeg"/><meta data-react-helmet="true" property="twitter:title" content="Creating videos from Processing&#x27;s p5.js with CCapture.js and ffmpeg"/><meta data-react-helmet="true" property="og:url" content="https://peterbeshai.com/blog/2018-10-28-p5js-ccapture/"/><meta data-react-helmet="true" property="og:image" content="https://peterbeshai.com/static/d0d1d1bd7ae243aabd45d352b478703e/9898f/preview.png"/><meta data-react-helmet="true" name="twitter:image" content="https://peterbeshai.com/static/d0d1d1bd7ae243aabd45d352b478703e/9898f/preview.png"/><meta data-react-helmet="true" property="og:type" content="article"/><meta data-react-helmet="true" name="twitter:card" content="summary_large_image"/><link rel="shortcut icon" href="/icons/icon-48x48.png"/><link rel="manifest" href="/manifest.webmanifest"/><meta name="theme-color" content="#000000"/><style data-styled="iDyhdk efFTfJ hhyHDk gTlRLk jsxnmT jeewNL hhXpxd jrfCIt ecGEQi fjzWhk ijWubC euoGcv cnqcGN jnpqTa dFzgml kFTRuK bQkNVd" data-styled-version="4.1.1">
+/* sc-component-id: sc-bdVaJa */
+.iDyhdk{margin-left:auto;margin-right:auto;padding:16px;max-width:800px;}.efFTfJ{margin-bottom:16px;}.hhyHDk{margin-top:128px;}.gTlRLk{margin-left:auto;margin-right:auto;padding-left:16px;padding-right:16px;padding-top:64px;padding-bottom:64px;}
+/* sc-component-id: sc-htpNat */
+.jsxnmT{text-align:center;}.jeewNL{margin-bottom:32px;margin-top:16px;}
+/* sc-component-id: sc-bxivhb */
+.hhXpxd{margin:0px;font-size:23px;font-family:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;font-family:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;font-weight:bold;text-transform:uppercase;-webkit-letter-spacing:0.035em;-moz-letter-spacing:0.035em;-ms-letter-spacing:0.035em;letter-spacing:0.035em;}.jrfCIt{margin:0px;font-size:27px;font-family:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;font-family:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;font-weight:bold;text-transform:uppercase;-webkit-letter-spacing:0.035em;-moz-letter-spacing:0.035em;-ms-letter-spacing:0.035em;letter-spacing:0.035em;}.ecGEQi{margin:0px;margin-bottom:16px;margin-top:64px;font-size:23px;font-family:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;font-family:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;font-weight:bold;text-transform:none;-webkit-letter-spacing:0.035em;-moz-letter-spacing:0.035em;-ms-letter-spacing:0.035em;letter-spacing:0.035em;}.fjzWhk{margin:0px;margin-bottom:16px;margin-top:64px;font-size:19px;font-family:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;font-family:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;font-weight:bold;text-transform:none;-webkit-letter-spacing:0.035em;-moz-letter-spacing:0.035em;-ms-letter-spacing:0.035em;letter-spacing:0.035em;}
+/* sc-component-id: sc-ifAKCX */
+.jnpqTa{color:#495057;border-bottom:2px solid #e9ecef;-webkit-text-decoration:none;text-decoration:none;background:transparent;-webkit-transition:0.2s background linear,0.2s border-color linear;transition:0.2s background linear,0.2s border-color linear;} .jnpqTa:hover{color:#343a40;background:#e3fafc;border-color:#99e9f2;}
+/* sc-component-id: sc-bZQynM */
+.kFTRuK{margin:0px;margin-left:auto;margin-right:auto;display:block;width:300px;max-width:100%;height:auto;}.bQkNVd{margin:0px;margin-left:auto;margin-right:auto;display:block;max-width:100%;height:auto;}
+/* sc-component-id: core__List-eqpeba-0 */
+.dFzgml{margin-bottom:32px;margin-top:0px;}
+/* sc-component-id: core__InlineList-eqpeba-1 */
+.ijWubC{list-style-type:none;padding-left:0;}.euoGcv{color:#868e96;list-style-type:none;list-style-type:none;padding-left:0;}
+/* sc-component-id: core__InlineListItem-eqpeba-2 */
+.cnqcGN{margin-right:16px;display:inline-block;} .cnqcGN:last-child{margin-right:0;} .cnqcGN::before{content:'•';color:#dee2e6;margin-right:16px;} .cnqcGN:first-child::before{content:'';margin-right:0;}
+/* sc-component-id: sc-global-1926057577 */
+html,body,#___gatsby{background-color:#fff;width:100%;height:100%;padding:0;margin:0;color:#000;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;font-family:Karla,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;line-height:1.7;font-size:19px;} *{box-sizing:border-box;} #___gatsby > div{height:100%;} img.full-width-image{width:100%;} a{color:#495057;}</style><link as="script" rel="preload" href="/component---src-templates-blog-post-js-e86b92af2fef775e9216.js"/><link as="script" rel="preload" href="/app-b6ef64a05ca2a06bac27.js"/><link as="script" rel="preload" href="/1-be46941191aa236417e9.js"/><link as="script" rel="preload" href="/0-d7ef72559a49db3dc3fb.js"/><link as="script" rel="preload" href="/webpack-runtime-d12304de2bb2627da070.js"/><link rel="preload" href="/static/d/733/path---blog-2018-10-28-p-5-js-ccapture-69-c-d88-a0w66uFUNVfBPBE5pmszQzeZLI.json" as="fetch" crossOrigin="use-credentials"/></head><body><div id="___gatsby"><div style="outline:none" tabindex="-1" role="group"><div><div class="sc-bdVaJa iDyhdk"><div class="sc-htpNat jsxnmT"><h2 font-size="3" font-weight="bold" font-family="header" class="sc-bxivhb hhXpxd">Peter Beshai</h2><ul class="core__InlineList-eqpeba-1 ijWubC"><li class="core__InlineListItem-eqpeba-2 cnqcGN"><a class="sc-ifAKCX jnpqTa" href="/">Home</a></li><li class="core__InlineListItem-eqpeba-2 cnqcGN"><a class="sc-ifAKCX jnpqTa" href="/#writing">Writing</a></li><li class="core__InlineListItem-eqpeba-2 cnqcGN"><a class="sc-ifAKCX jnpqTa" href="/#projects">Projects</a></li><li class="core__InlineListItem-eqpeba-2 cnqcGN"><a class="sc-ifAKCX jnpqTa" href="/#experiments">Experiments</a></li><li class="core__InlineListItem-eqpeba-2 cnqcGN"><a class="sc-ifAKCX jnpqTa" href="/#open-source">Open Source</a></li></ul></div></div><div class="sc-bdVaJa iDyhdk"><h2 font-size="4" font-weight="bold" font-family="header" class="sc-bxivhb jrfCIt">Creating videos from Processing&#x27;s p5.js with CCapture.js and ffmpeg</h2><ul color="gray.6" class="core__InlineList-eqpeba-1 euoGcv"><li class="core__InlineListItem-eqpeba-2 cnqcGN">October 28, 2018</li><li class="core__InlineListItem-eqpeba-2 cnqcGN">5 min read</li><li class="core__InlineListItem-eqpeba-2 cnqcGN"><a class="sc-ifAKCX jnpqTa" href="/p5js-ccapture/">Demo</a></li><li class="core__InlineListItem-eqpeba-2 cnqcGN"><a href="https://github.com/pbeshai/p5js-ccapture" class="sc-ifAKCX jnpqTa">GitHub</a></li></ul><div><div class="sc-htpNat jeewNL">I&#x27;ve recently started exploring the generative art and creative coding space, and it&#x27;s been a lot of fun, but boy is there a lot to learn. There are, however, tons of great artists and creators out there that have been very inspiring to follow. Big thanks to the following people who share so openly with the community in educational and motivational ways:</div>
+<ul class="core__List-eqpeba-0 dFzgml">
+<li class="sc-bdVaJa efFTfJ"><a href="https://twitter.com/zachlieberman" class="sc-ifAKCX jnpqTa">Zach Lieberman (@zachlieberman)</a></li>
+<li class="sc-bdVaJa efFTfJ"><a href="https://twitter.com/beesandbombs" class="sc-ifAKCX jnpqTa">dave (@beesandbombs)</a></li>
+<li class="sc-bdVaJa efFTfJ"><a href="https://twitter.com/tylhobbs" class="sc-ifAKCX jnpqTa">Tyler Hobbs (@tylhobbs)</a></li>
+<li class="sc-bdVaJa efFTfJ"><a href="https://twitter.com/inconvergent" class="sc-ifAKCX jnpqTa">Anders Hoff (@inconvergent)</a></li>
+<li class="sc-bdVaJa efFTfJ"><a href="https://twitter.com/mattdesl" class="sc-ifAKCX jnpqTa">Matt DesLauriers (@mattdesl)</a></li>
+<li class="sc-bdVaJa efFTfJ"><a href="https://twitter.com/thespite" class="sc-ifAKCX jnpqTa">Jaume Sanchez Elias (@thespite)</a></li>
+<li class="sc-bdVaJa efFTfJ"><a href="https://www.instagram.com/shedrawswithcode/" class="sc-ifAKCX jnpqTa">Jessica In (@shedrawswithcode)</a></li>
+<li class="sc-bdVaJa efFTfJ"><a href="https://twitter.com/sasj_nl" class="sc-ifAKCX jnpqTa">Saskia Freeke (@sasj_nl)</a></li>
+</ul>
+<div class="sc-htpNat jeewNL">After following these amazing people and seeing the continuous flow of their work, I got the itch to begin trying to create things myself and share them on <a href="https://www.instagram.com/pbeshasketch/" class="sc-ifAKCX jnpqTa">Instagram (@pbeshasketch)</a>. I tried <a href="https://processing.org/" class="sc-ifAKCX jnpqTa">Processing</a>, <a href="http://openframeworks.cc/" class="sc-ifAKCX jnpqTa">openFrameworks</a>, <a href="https://threejs.org/" class="sc-ifAKCX jnpqTa">Three.js</a>, and plain old SVG before finally giving <a href="https://p5js.org" class="sc-ifAKCX jnpqTa">p5.js</a> a shot (still curious to try <a href="https://www.derivative.ca/" class="sc-ifAKCX jnpqTa">TouchDesigner</a>!)</div>
+<div class="sc-htpNat jeewNL">While it&#x27;s straightforward to save a still image from p5.js with the <a href="https://p5js.org/reference/#/p5/saveCanvas" class="sc-ifAKCX jnpqTa">saveCanvas()</a> function, <a href="https://p5js.org/reference/#/p5/saveFrames" class="sc-ifAKCX jnpqTa">the documentation</a> suggests considering a third-party library like <a href="https://github.com/spite/ccapture.js/" class="sc-ifAKCX jnpqTa">CCapture.js</a> for saving longer animations. It seems there is some confusion over how to get it to work judging by <a href="https://github.com/spite/ccapture.js/issues/69" class="sc-ifAKCX jnpqTa">issue #69</a> on the CCapture.js repo, so I thought I&#x27;d share an approach that worked for me.</div>
+<h2 font-size="3" font-weight="bold" font-family="header" class="sc-bxivhb ecGEQi">Export PNGs with CCapture.js</h2>
+<ul class="core__List-eqpeba-0 dFzgml">
+<li class="sc-bdVaJa efFTfJ"><a href="https://github.com/pbeshai/p5js-ccapture/blob/master/index.html" class="sc-ifAKCX jnpqTa">View the full version of this code</a></li>
+<li class="sc-bdVaJa efFTfJ"><a href="/p5js-ccapture/" class="sc-ifAKCX jnpqTa">View the live demo</a></li>
+</ul>
+<div class="sc-htpNat jeewNL">Let&#x27;s say we have created a sketch in p5.js that animates in a loop for 3 seconds:</div>
+<img display="block" src="/output-1c22e6f43a13918c3652f946716c5627.gif" width="300" alt="Animation from p5.js to gif" class="sc-bZQynM kFTRuK"/>
+<div class="sc-htpNat jeewNL">Our approach will be save each frame of the loop as a PNG file then stitch them together in a video with <a href="https://www.ffmpeg.org/" class="sc-ifAKCX jnpqTa">ffmpeg</a>. To easily download each frame from the browser, we&#x27;ll use CCapture.js. </div>
+<div class="sc-htpNat jeewNL">To do so, we first need to set an explicit frame rate and instantiate CCapture.</div>
+<div class="gatsby-highlight" data-language="js"><pre class="language-js"><code class="language-js"><span class="token comment">// the frame rate (frames per second)</span>
+<span class="token keyword">var</span> fps <span class="token operator">=</span> <span class="token number">30</span><span class="token punctuation">;</span>
+
+<span class="token comment">// the canvas capturer instance</span>
+<span class="token keyword">var</span> capturer <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">CCapture</span><span class="token punctuation">(</span><span class="token punctuation">{</span> format<span class="token punctuation">:</span> <span class="token string">&#x27;png&#x27;</span><span class="token punctuation">,</span> framerate<span class="token punctuation">:</span> fps <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre></div>
+<div class="sc-htpNat jeewNL">When we&#x27;re ready to record, we&#x27;ll call <code class="language-text">capturer.start()</code>. In this example, we record immediately, but you could also have the recording begin in response to a button click or other action.</div>
+<div class="gatsby-highlight" data-language="js"><pre class="language-js"><code class="language-js"><span class="token comment">// setup the drawing</span>
+<span class="token keyword">function</span> <span class="token function">setup</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token function">createCanvas</span><span class="token punctuation">(</span><span class="token number">540</span><span class="token punctuation">,</span> <span class="token number">540</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment">// this is optional, but lets us see how the animation will </span>
+  <span class="token comment">// look in browser.</span>
+  <span class="token function">frameRate</span><span class="token punctuation">(</span>fps<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment">// start the recording</span>
+  capturer<span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre></div>
+<div class="sc-htpNat jeewNL">The nice part about CCapture.js is that we can program our sketches according to elapsed time and it will ensure every possible frame is rendered, even if individual frames take longer to draw in browser than our desired frame rate can keep up with.</div>
+<div class="sc-htpNat jeewNL">All we need to do to get our PNGs per frame is to call <code class="language-text">capturer.capture()</code> on each draw call. This function takes the canvas DOM node as its argument, and at the time of writing, p5.js assigns an ID to it called <strong>defaultCanvas0</strong>. The code to capture a frame from our sketch is:</div>
+<div class="gatsby-highlight" data-language="js"><pre class="language-js"><code class="language-js">capturer<span class="token punctuation">.</span><span class="token function">capture</span><span class="token punctuation">(</span>document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">&#x27;defaultCanvas0&#x27;</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre></div>
+<div class="sc-htpNat jeewNL">Finally, we call <code class="language-text">capturer.stop()</code> and <code class="language-text">capturer.save()</code> when we&#x27;re done recording and CCapture.js will prompt us to download a <code class="language-text">.tar</code> file containing our images. See the full draw function below:</div>
+<div class="gatsby-highlight" data-language="js"><pre class="language-js"><code class="language-js"><span class="token comment">// needed to subtract initial millis before first draw to </span>
+<span class="token comment">// begin at t=0.</span>
+<span class="token keyword">var</span> startMillis<span class="token punctuation">;</span> 
+
+<span class="token comment">// draw</span>
+<span class="token keyword">function</span> <span class="token function">draw</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>startMillis <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    startMillis <span class="token operator">=</span> <span class="token function">millis</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token comment">// duration in milliseconds</span>
+  <span class="token keyword">var</span> duration <span class="token operator">=</span> <span class="token number">3000</span><span class="token punctuation">;</span>
+
+  <span class="token comment">// compute how far we are through the animation as a value </span>
+  <span class="token comment">// between 0 and 1.</span>
+  <span class="token keyword">var</span> elapsed <span class="token operator">=</span> <span class="token function">millis</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> startMillis<span class="token punctuation">;</span>
+  <span class="token keyword">var</span> t <span class="token operator">=</span> <span class="token function">map</span><span class="token punctuation">(</span>elapsed<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> duration<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment">// if we have passed t=1 then end the animation.</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>t <span class="token operator">&gt;</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">noLoop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">&#x27;finished recording.&#x27;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    capturer<span class="token punctuation">.</span><span class="token function">stop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    capturer<span class="token punctuation">.</span><span class="token function">save</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token comment">// actually draw</span>
+  <span class="token function">drawCircles</span><span class="token punctuation">(</span>t<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// ... excerpted for clarity</span>
+
+  <span class="token comment">// handle saving the frame</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">&#x27;capturing frame&#x27;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  capturer<span class="token punctuation">.</span><span class="token function">capture</span><span class="token punctuation">(</span>document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">&#x27;defaultCanvas0&#x27;</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre></div>
+<h2 font-size="3" font-weight="bold" font-family="header" class="sc-bxivhb ecGEQi">Creating a video with ffmpeg</h2>
+<div class="sc-htpNat jeewNL">At this point, we should have a folder full of PNG files, one for each frame in our animation.</div>
+<div class="sc-htpNat jeewNL"><span class="gatsby-resp-image-wrapper" style="position:relative;display:block;max-width:680px;margin-left:auto;margin-right:auto">
+    <span class="gatsby-resp-image-background-image" style="padding-bottom:77.05882352941177%;position:relative;bottom:0;left:0;background-image:url(&#x27;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAPCAYAAADkmO9VAAAACXBIWXMAAAsSAAALEgHS3X78AAACLklEQVQ4y62Ty27iMBSGWXQzmifpjiWXDex4im7KG1T0YXgAth2JDRJiUSQYbgIChADDJUCBQAiXJFhAjD3npAMdCnQxGku/nDj259//cRwOaJXkz6DSKfLmuGHWKzWSKlZIrS2TWhX6mkhEUSStVou0f7WJJElEEATS6/XIYDAg/X7fHA6HPJ1OBx3H9vLjJTSdaVxTNS7W61wSRT5XZ3w0GvHJZGJrPp9zRZlwANjvAOTdbpcjbLlc8ng8HjoBk6+voc3G5LLcs8bj8UHXDbbZbM5kmiYzDIPpus4AwBaLBZtOp4fVamVRSnkkEvkA5vP5kGVZXCiXabVaY5qmcZy03+/PhHMs6NEtugJ3DJ4phxaNRj+A2VwuhAvKpdIf4MJevNvtrgo3BIdnwEwm8xcwm7UdQvi00WgyOMZVIG56BKJDiAePbgNTqdQlsNls0k6nw9br9Qn4+dg4hjCcAxni5reBUl2iktTAXb90iN9X65XtENxeAnOYIUyE+0UBilWEotx2qEJRFp+KcuFwt9vyMlS5/g5ksJhtt1sGgDPh2Eyd2dfmJrBQKDzjIGR46PVkTjYEXzlj7KowP90wMEO+Xq0POBf+lOcTMJFIPCmKwovF0l4oC1SWZQp/A4WMznQcw++qqtLR2xsF6B6jSCaTTyeg0+m89/l8Dx6PJwh6dLvdX8rr9T76/f6jgoFA4MHlct3bsHA4jN0d6Bvo+z8K197FYrF3hxDBfxG236plY6iYVP5FAAAAAElFTkSuQmCC&#x27;);background-size:cover;display:block"></span>
+    <img display="block" class="gatsby-resp-image-image sc-bZQynM bQkNVd" style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;box-shadow:inset 0px 0px 0px 400px #fff" alt="Folder full of frame PNGs" title="" src="/static/a2e39e73ca03ad215148068a701d3df8/0aebf/finder_files.png" srcSet="/static/a2e39e73ca03ad215148068a701d3df8/a2c8f/finder_files.png 175w, /static/a2e39e73ca03ad215148068a701d3df8/d1fe6/finder_files.png 350w, /static/a2e39e73ca03ad215148068a701d3df8/0aebf/finder_files.png 680w" sizes="(max-width: 680px) 100vw, 680px"/>
+  </span></div>
+<div class="sc-htpNat jeewNL">To combine these into a .mp4 video file, we can use a command-line tool called <a href="https://www.ffmpeg.org/" class="sc-ifAKCX jnpqTa">ffmpeg</a>. We need a few components to construct the command to run:</div>
+<ul class="core__List-eqpeba-0 dFzgml">
+<li class="sc-bdVaJa efFTfJ"><strong>Frame rate</strong>: 30 (see <code class="language-text">fps</code> in the code)</li>
+<li class="sc-bdVaJa efFTfJ"><strong>Dimensions</strong>: 540x540 (should match <code class="language-text">createCanvas()</code> in the code)</li>
+<li class="sc-bdVaJa efFTfJ"><strong>Frame filenames</strong>: <code class="language-text">&quot;%07d.png&quot;</code> (incrementing numbers, 7 numbers long)</li>
+<li class="sc-bdVaJa efFTfJ"><strong>Quality (CRF)</strong>: 17 (see <a href="https://trac.ffmpeg.org/wiki/Encode/H.264" class="sc-ifAKCX jnpqTa">ffmpeg docs</a>, but 17–28 is reasonable, 0 is lossless)</li>
+</ul>
+<div class="sc-htpNat jeewNL">Open a shell to the folder containing the frame files and run this command:</div>
+<div class="gatsby-highlight" data-language="bash"><pre class="language-bash"><code class="language-bash">ffmpeg -r 30 -f image2 -s 540x540 -i <span class="token string">&quot;%07d.png&quot;</span> -vcodec libx264 -crf 17 -pix_fmt yuv420p output.mp4</code></pre></div>
+<div class="sc-htpNat jeewNL">When you run this, you&#x27;ll see a whole bunch of messages from ffmpeg while it&#x27;s doing its magic, but afterward you&#x27;ll have a file named <strong>output.mp4</strong> in the same directory as the frame files. </div>
+<h2 font-size="2" font-weight="bold" font-family="header" class="sc-bxivhb fjzWhk">Uploading to Instagram</h2>
+<div class="sc-htpNat jeewNL">I had no idea how to get the video I just made posted to Instagram since you are restricted to posting from your phone. My solution was to use Dropbox as a proxy to get my video file on to my phone, which would let me post it to Instagram. </div>
+<ol class="core__List-eqpeba-0 dFzgml">
+<li class="sc-bdVaJa efFTfJ">Put the video in a Dropbox folder from your computer</li>
+<li class="sc-bdVaJa efFTfJ">Open the Dropbox app on your phone and select the video file</li>
+<li class="sc-bdVaJa efFTfJ">Export to your Instagram feed via the Dropbox app</li>
+</ol>
+<div class="sc-htpNat jeewNL">Done and done!</div>
+<div class="sc-htpNat jeewNL">I&#x27;m still figuring out what the best format for uploading to various social media platforms is, but so far I&#x27;ve had some luck with 1080x1080 at 30fps for Instagram and 1280x1280 at 30fps for Twitter. </div>
+<h2 font-size="3" font-weight="bold" font-family="header" class="sc-bxivhb ecGEQi">Bonus: Creating a GIF with ImageMagick&#x27;s convert</h2>
+<div class="sc-htpNat jeewNL">While we&#x27;re here, why not cover the command to generate a GIF from the frame files. To do this, we can use <a href="https://www.imagemagick.org" class="sc-ifAKCX jnpqTa">ImageMagick&#x27;s</a> wonderful <a href="https://www.imagemagick.org/script/convert.php" class="sc-ifAKCX jnpqTa">convert</a> command.</div>
+<div class="sc-htpNat jeewNL">All we need to run the command is to figure out the frame delay in hundredths of a second. The frame delay is the reciprocal of the frame rate (~16.67ms at 60fps, ~33.33ms at 30fps). We can compute this as follows:</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th></th><th></th></tr></thead><tbody><tr><td>frame delay</td><td>= 100 × 1 / frame rate</td></tr><tr><td></td><td>= 100 / 30</td></tr><tr><td></td><td>= 3.33</td></tr></tbody></table>
+<div class="sc-htpNat jeewNL">Now in a shell in the same folder where the frame files are, run:</div>
+<div class="gatsby-highlight" data-language="bash"><pre class="language-bash"><code class="language-bash">convert -delay 3.33 -loop 0 *.png output.gif</code></pre></div>
+<div class="sc-htpNat jeewNL">Voilà! A gif has been born (see <strong>output.gif</strong>).</div>
+<h2 font-size="3" font-weight="bold" font-family="header" class="sc-bxivhb ecGEQi">Next Steps</h2>
+<div class="sc-htpNat jeewNL">I&#x27;ve been trying out a number of things so far as I begin exploring this space, and CCapture.js seemed to work pretty well with p5.js in this little experiment. Next, I&#x27;d like to investigate Matt DesLaurier&#x27;s <a href="https://github.com/mattdesl/canvas-sketch" class="sc-ifAKCX jnpqTa">canvas-sketch</a> to see if it simplifies matters (plus it just seems really cool).</div>
+<ul class="core__List-eqpeba-0 dFzgml">
+<li class="sc-bdVaJa efFTfJ"><a href="https://github.com/pbeshai/p5js-ccapture" class="sc-ifAKCX jnpqTa">View the code used in this post</a></li>
+<li class="sc-bdVaJa efFTfJ"><a href="/p5js-ccapture/" class="sc-ifAKCX jnpqTa">View the live demo</a></li>
+</ul>
+<div class="sc-htpNat jeewNL">If you have any questions, suggestions, or other comments, I&#x27;d love to hear them! Leave a message here or tweet at me <a href="https://twitter.com/pbesh" class="sc-ifAKCX jnpqTa">@pbesh</a>.</div></div><div class="sc-bdVaJa hhyHDk"><div id="disqus_thread"></div></div></div><div class="sc-bdVaJa gTlRLk"><div class="sc-htpNat jsxnmT"><ul class="core__InlineList-eqpeba-1 ijWubC"><li class="core__InlineListItem-eqpeba-2 cnqcGN"><a href="mailto:peter.beshai@gmail.com" class="sc-ifAKCX jnpqTa">peter.beshai@gmail.com</a></li><li class="core__InlineListItem-eqpeba-2 cnqcGN"><a href="https://twitter.com/pbesh" class="sc-ifAKCX jnpqTa">Twitter</a></li><li class="core__InlineListItem-eqpeba-2 cnqcGN"><a href="https://www.linkedin.com/in/pbeshai" class="sc-ifAKCX jnpqTa">LinkedIn</a></li><li class="core__InlineListItem-eqpeba-2 cnqcGN"><a href="https://github.com/pbeshai" class="sc-ifAKCX jnpqTa">GitHub</a></li><li class="core__InlineListItem-eqpeba-2 cnqcGN"><a href="https://instagram.com/pbeshasketch" class="sc-ifAKCX jnpqTa">Instagram</a></li></ul></div></div></div></div></div><script>
+  
+  
+  if(true) {
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  }
+  if (typeof ga === "function") {
+    ga('create', 'UA-55938435-1', 'auto', {});
+      
+      }
+      </script><script id="gatsby-script-loader">/*<![CDATA[*/window.page={"componentChunkName":"component---src-templates-blog-post-js","jsonName":"blog-2018-10-28-p-5-js-ccapture-69c","path":"/blog/2018-10-28-p5js-ccapture/"};window.dataPath="733/path---blog-2018-10-28-p-5-js-ccapture-69-c-d88-a0w66uFUNVfBPBE5pmszQzeZLI";/*]]>*/</script><script id="gatsby-chunk-mapping">/*<![CDATA[*/window.___chunkMapping={"app":["/app-b6ef64a05ca2a06bac27.js"],"component---src-templates-blog-post-js":["/component---src-templates-blog-post-js.1d3c152f5f561507ccdb.css","/component---src-templates-blog-post-js-e86b92af2fef775e9216.js"],"component---src-templates-demo-js":["/component---src-templates-demo-js.1d3c152f5f561507ccdb.css","/component---src-templates-demo-js-b27d21192def89634b14.js"],"component---src-pages-404-js":["/component---src-pages-404-js.1d3c152f5f561507ccdb.css","/component---src-pages-404-js-27457b299dade401519b.js"],"component---src-pages-index-js":["/component---src-pages-index-js.1d3c152f5f561507ccdb.css","/component---src-pages-index-js-732f4020214226ba5ae2.js"]};/*]]>*/</script><script src="/webpack-runtime-d12304de2bb2627da070.js" async=""></script><script src="/0-d7ef72559a49db3dc3fb.js" async=""></script><script src="/1-be46941191aa236417e9.js" async=""></script><script src="/app-b6ef64a05ca2a06bac27.js" async=""></script><script src="/component---src-templates-blog-post-js-e86b92af2fef775e9216.js" async=""></script></body></html>
